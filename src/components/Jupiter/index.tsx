@@ -10,6 +10,8 @@ import {
   WalletMultiButton,
   WalletModalProvider,
 } from "@solana/wallet-adapter-react-ui";
+import { useLocalStorageState } from "ahooks";
+import { Slippage } from "./Slippage";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -36,6 +38,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const [routes, setRoutes] = useState<
     Awaited<ReturnType<typeof api.v1QuoteGet>>["data"]
   >([]);
+
+  const [slippage, setSlippage] = useLocalStorageState("slippage", {
+    defaultValue: 1,
+  });
 
   const [inputTokenInfo, setInputTokenInfo] = useState<
     TokenInfo | null | undefined
@@ -151,72 +157,75 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   }
 
   return (
-    <div className="bg-base-200 w-[450px] rounded-[15px] px-5 pb-10 pt-5">
-      <div className="relative">
-        <button
-          onClick={fetchRoute}
-          disabled={isLoading}
-          type="button"
-          className="btn btn-sm btn-circle absolute right-2 top-1"
-        >
-          <RefreshIcon className="h-[20px]" />
-        </button>
-      </div>
-
-      <div className="flex flex-col justify-between mt-10">
-        <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
-          <input
-            value={inputAmout}
-            type="number"
-            onChange={(e) => setInputAmount(e.target.value.trim())}
-            className="right-4 top-4 absolute input text-right bg-transparent text-xl font-bold focus:outline-0"
-          />
-          <div className="left-4 top-4 absolute">
-            <SelectCoin
-              tokenInfo={inputTokenInfo}
-              setCoin={setInputTokenInfo}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-center my-1 w-full">
-          <SwitchVerticalIcon
-            onClick={handleSwitch}
-            className="h-[30px] w-[30px] rotate-45 cursor-pointer"
-          />
-        </div>
-
-        <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
-          <div className="right-4 top-6 absolute input text-right bg-transparent text-xl font-bold">
-            {outputAmount}
-          </div>
-          <div className="left-4 top-4 absolute">
-            <SelectCoin
-              tokenInfo={outputTokenInfo}
-              setCoin={setOutputTokenInfo}
-            />
-          </div>
-        </div>
-
-        {connected ? (
-          <ButtonBorderGradient
-            onClick={handleSwap}
-            disabled={isSubmitting}
-            buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
-            fromColor="green-400"
-            toColor="blue-500"
+    <>
+      <Slippage slippage={slippage} setSlippage={setSlippage} />
+      <div className="bg-base-200 w-[450px] rounded-[15px] px-5 pb-10 pt-5">
+        <div className="relative">
+          <button
+            onClick={fetchRoute}
+            disabled={isLoading}
+            type="button"
+            className="btn btn-sm btn-circle absolute right-2 top-1"
           >
-            {isSubmitting ? "Swapping.." : "Swap"}
-          </ButtonBorderGradient>
-        ) : (
-          <div className="flex flex-row justify-center">
-            <WalletModalProvider>
-              <WalletMultiButton />
-            </WalletModalProvider>
+            <RefreshIcon className="h-[20px]" />
+          </button>
+        </div>
+
+        <div className="flex flex-col justify-between mt-10">
+          <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
+            <input
+              value={inputAmout}
+              type="number"
+              onChange={(e) => setInputAmount(e.target.value.trim())}
+              className="right-4 top-4 absolute input text-right bg-transparent text-xl font-bold focus:outline-0"
+            />
+            <div className="left-4 top-4 absolute">
+              <SelectCoin
+                tokenInfo={inputTokenInfo}
+                setCoin={setInputTokenInfo}
+              />
+            </div>
           </div>
-        )}
+
+          <div className="flex flex-row justify-center my-1 w-full">
+            <SwitchVerticalIcon
+              onClick={handleSwitch}
+              className="h-[30px] w-[30px] rotate-45 cursor-pointer"
+            />
+          </div>
+
+          <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
+            <div className="right-4 top-6 absolute input text-right bg-transparent text-xl font-bold">
+              {outputAmount}
+            </div>
+            <div className="left-4 top-4 absolute">
+              <SelectCoin
+                tokenInfo={outputTokenInfo}
+                setCoin={setOutputTokenInfo}
+              />
+            </div>
+          </div>
+
+          {connected ? (
+            <ButtonBorderGradient
+              onClick={handleSwap}
+              disabled={isSubmitting}
+              buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
+              fromColor="green-400"
+              toColor="blue-500"
+            >
+              {isSubmitting ? "Swapping.." : "Swap"}
+            </ButtonBorderGradient>
+          ) : (
+            <div className="flex flex-row justify-center">
+              <WalletModalProvider>
+                <WalletMultiButton />
+              </WalletModalProvider>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

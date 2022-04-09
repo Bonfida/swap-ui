@@ -9,6 +9,7 @@ export const ButtonBorderGradient = ({
   viaColor,
   toColor,
   disabled,
+  containerClass,
 }: {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
   children: ReactNode;
@@ -17,6 +18,7 @@ export const ButtonBorderGradient = ({
   viaColor?: string;
   toColor: string;
   disabled?: boolean;
+  containerClass?: string;
 }) => {
   return (
     <div
@@ -24,7 +26,8 @@ export const ButtonBorderGradient = ({
         "rounded-[10px] bg-gradient-to-r p-[1.5px]",
         `from-${fromColor}`,
         viaColor ? `via-${viaColor}` : undefined,
-        `to-${toColor}`
+        `to-${toColor}`,
+        containerClass
       )}
     >
       <button
