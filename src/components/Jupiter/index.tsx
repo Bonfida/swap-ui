@@ -107,7 +107,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             body: {
               route: routes[0],
               userPublicKey: publicKey.toBase58(),
-              feeAccount: FEES.toBase58(),
+              // feeAccount: FEES.toBase58(),
             },
           });
         const transactions = (
@@ -153,25 +153,26 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
   console.log(`Pubkey ${publicKey?.toBase58()}`);
   if (!loaded) {
-    return <div>Loading jupiter routeMap...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
     <>
-      <Slippage slippage={slippage} setSlippage={setSlippage} />
       <div className="bg-base-200 w-[450px] rounded-[15px] px-5 pb-10 pt-5">
         <div className="relative">
+          <Slippage slippage={slippage} setSlippage={setSlippage} />
           <button
             onClick={fetchRoute}
             disabled={isLoading}
             type="button"
-            className="btn btn-sm btn-circle absolute right-2 top-1"
+            className="btn btn-sm btn-circle absolute right-2 top-0 bg-gray-200 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20"
           >
             <RefreshIcon className="h-[20px]" />
           </button>
         </div>
 
         <div className="flex flex-col justify-between mt-10">
+          <span className="text-white ml-3 font-bold">You pay</span>
           <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
             <input
               value={inputAmout}
@@ -194,6 +195,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             />
           </div>
 
+          <span className="text-white ml-3 font-bold">You receive</span>
           <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
             <div className="right-4 top-6 absolute input text-right bg-transparent text-xl font-bold">
               {outputAmount}

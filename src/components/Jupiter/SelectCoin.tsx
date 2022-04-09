@@ -49,14 +49,12 @@ export const SelectCoin = ({
 
   const originalList = useMemo(
     () =>
-      Array.from(tokenMap.values())
-        .filter(
-          (e) =>
-            e.address.includes(search) ||
-            e.name.includes(search) ||
-            e.symbol.includes(search)
-        )
-        .slice(0, 40),
+      Array.from(tokenMap.values()).filter(
+        (e) =>
+          e.address.includes(search) ||
+          e.name.includes(search) ||
+          e.symbol.includes(search)
+      ),
     [search]
   );
 
