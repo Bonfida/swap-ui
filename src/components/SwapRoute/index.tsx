@@ -2,14 +2,23 @@ import { InlineResponseDefaultMarketInfos } from "@jup-ag/api";
 import { TokenInfo } from "@solana/spl-token-registry";
 import { formatTokens, formatRoute } from "../../utils/swap-route";
 
+/**
+ *
+ * TODO
+ * - Add loading state
+ * - Add non selected route state
+ */
+
 export const SwapRoute = ({
   selected,
   route,
   tokenMap,
+  amount,
 }: {
   selected: boolean;
   route: InlineResponseDefaultMarketInfos[];
   tokenMap: Map<string, TokenInfo>;
+  amount: number;
 }) => {
   return (
     <div className="relative bg-gradient-to-r from-green-400 to-blue-500 p-[2px] rounded-[6px]">
@@ -26,7 +35,7 @@ export const SwapRoute = ({
           </span>
         </div>
         {/* Output amount */}
-        <div></div>
+        <div className="text-xl font-bold">{amount}</div>
       </div>
     </div>
   );

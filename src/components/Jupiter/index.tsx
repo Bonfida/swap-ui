@@ -209,11 +209,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               />
             </div>
           </div>
-          {bestRoute && bestRoute.marketInfos && (
+          {bestRoute && bestRoute.marketInfos && outputAmount && (
             <SwapRoute
               route={bestRoute.marketInfos}
               tokenMap={tokenMap}
               selected={true}
+              amount={outputAmount}
             />
           )}
 
