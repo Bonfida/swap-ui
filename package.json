@@ -30,8 +30,10 @@
     "react-toastify": "^8.2.0"
   },
   "devDependencies": {
+    "@types/keccak": "^3.0.1",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
+    "@types/readable-stream": "^2.3.13",
     "@vitejs/plugin-react": "^1.0.7",
     "autoprefixer": "^10.4.4",
     "postcss": "^8.4.12",

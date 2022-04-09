@@ -21,12 +21,14 @@ import Footer from "./components/navigation-frame/Footer";
 import TopBar from "./components/navigation-frame/TopBar";
 import { RPC_URL } from "./settings/rpc";
 import { JupiterApiProvider } from "./contexts";
-import { ButtonModal, ButtonBorderGradient } from "./components/Buttons";
+import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
 
 import "react-toastify/dist/ReactToastify.css";
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css";
+
+window.Buffer = Buffer;
 
 const App = () => {
   const network = WalletAdapterNetwork.Mainnet;
