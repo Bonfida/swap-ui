@@ -12,6 +12,7 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { useLocalStorageState } from "ahooks";
 import { Slippage } from "./Slippage";
+import { SwapRoute } from "../SwapRoute";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -145,6 +146,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
   const bestRoute = routes?.[0];
   console.log(bestRoute);
+  const marketInfo = bestRoute?.marketInfos;
   const outputAmount =
     bestRoute &&
     (bestRoute.outAmount || 0) / Math.pow(10, outputTokenInfo?.decimals || 1);
@@ -165,22 +167,22 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             onClick={fetchRoute}
             disabled={isLoading}
             type="button"
-            className="btn btn-sm btn-circle absolute right-2 top-0 bg-gray-200 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20"
+            className="absolute top-0 bg-gray-200 btn btn-sm btn-circle right-2 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20"
           >
             <RefreshIcon className="h-[20px]" />
           </button>
         </div>
 
         <div className="flex flex-col justify-between mt-10">
-          <span className="text-white ml-3 font-bold">You pay</span>
-          <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
+          <span className="ml-3 font-bold text-white">You pay</span>
+          <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
             <input
               value={inputAmout}
               type="number"
               onChange={(e) => setInputAmount(e.target.value.trim())}
-              className="right-4 top-4 absolute input text-right bg-transparent text-xl font-bold focus:outline-0"
+              className="absolute text-xl font-bold text-right bg-transparent right-4 top-4 input focus:outline-0"
             />
-            <div className="left-4 top-4 absolute">
+            <div className="absolute left-4 top-4">
               <SelectCoin
                 tokenInfo={inputTokenInfo}
                 setCoin={setInputTokenInfo}
@@ -188,25 +190,32 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             </div>
           </div>
 
-          <div className="flex flex-row justify-center my-1 w-full">
+          <div className="flex flex-row justify-center w-full my-1">
             <SwitchVerticalIcon
               onClick={handleSwitch}
               className="h-[30px] w-[30px] rotate-45 cursor-pointer"
             />
           </div>
 
-          <span className="text-white ml-3 font-bold">You receive</span>
-          <div className="relative p-10 bg-neutral rounded-lg w-full my-5">
-            <div className="right-4 top-6 absolute input text-right bg-transparent text-xl font-bold">
+          <span className="ml-3 font-bold text-white">You receive</span>
+          <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
+            <div className="absolute text-xl font-bold text-right bg-transparent right-4 top-6 input">
               {outputAmount}
             </div>
-            <div className="left-4 top-4 absolute">
+            <div className="absolute left-4 top-4">
               <SelectCoin
                 tokenInfo={outputTokenInfo}
                 setCoin={setOutputTokenInfo}
               />
             </div>
           </div>
+          {bestRoute && bestRoute.marketInfos && (
+            <SwapRoute
+              route={bestRoute.marketInfos}
+              tokenMap={tokenMap}
+              selected={true}
+            />
+          )}
 
           {connected ? (
             <ButtonBorderGradient
