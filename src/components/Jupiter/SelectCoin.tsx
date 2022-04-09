@@ -74,7 +74,7 @@ export const SelectCoin = ({
       id={`select-${id.current}`}
       buttonClass="bg-transparent border-0 hover:bg-white hover:bg-opacity-10"
       buttonText={<Coin tokenInfo={tokenInfo} />}
-      modalClass="h-[50%] overflow-clip"
+      modalClass="h-screen overflow-clip"
     >
       <input
         value={search || ""}

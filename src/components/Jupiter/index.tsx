@@ -1,4 +1,10 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
+import React, {
+  FunctionComponent,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { ButtonBorderGradient } from "../Buttons";
@@ -12,7 +18,14 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { useLocalStorageState } from "ahooks";
 import { Slippage } from "./Slippage";
+import {
+  InlineResponseDefaultMarketInfos,
+  InlineResponseDefaultData,
+} from "@jup-ag/api";
 import { SwapRoute } from "../SwapRoute";
+import { toast } from "react-toastify";
+import { ExplorerButton } from "../Buttons";
+import Loading from "../Loading";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -31,6 +44,8 @@ interface IState {
 }
 
 const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
+  const toastId = useRef(null as any);
+  const [firstLoad, setFirstLoad] = useState(false);
   const { connected, publicKey, signAllTransactions } = useWallet();
   const { connection } = useConnection();
   const { tokenMap, routeMap, loaded, api } = useJupiterApiContext();
@@ -43,7 +58,8 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const [slippage, setSlippage] = useLocalStorageState("slippage", {
     defaultValue: 1,
   });
-
+  const [selectedRoute, setSelectedRoute] =
+    useState<InlineResponseDefaultData | null>(null);
   const [inputTokenInfo, setInputTokenInfo] = useState<
     TokenInfo | null | undefined
   >(tokenMap.get(INPUT_MINT_ADDRESS) as TokenInfo);
@@ -84,6 +100,19 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     fetchRoute();
   }, [fetchRoute]);
 
+  const bestRoute = routes?.[0];
+
+  useEffect(() => {
+    if (!firstLoad && bestRoute) {
+      setSelectedRoute(bestRoute);
+      setFirstLoad(true);
+    }
+  }, [loaded, bestRoute]);
+
+  useEffect(() => {
+    setFirstLoad(false);
+  }, [inputTokenInfo, outputTokenInfo, isLoading]);
+
   // ensure outputMint can be swapable to inputMint
   useEffect(() => {
     if (inputTokenInfo) {
@@ -102,7 +131,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     try {
       if (!isLoading && routes?.[0] && publicKey && signAllTransactions) {
         setIsSubmitting(true);
-
+        toastId.current = toast("Preparing transaction...", {
+          type: toast.TYPE.INFO,
+          autoClose: false,
+        });
         const { swapTransaction, setupTransaction, cleanupTransaction } =
           await api.v1SwapPost({
             body: {
@@ -120,6 +152,16 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         });
 
         await signAllTransactions(transactions);
+        toast.update(toastId.current, {
+          type: toast.TYPE.INFO,
+          autoClose: false,
+          render: (
+            <div className="flex flex-row items-center">
+              <span className="mr-2">Sending transaction </span> <Loading />
+            </div>
+          ),
+        });
+
         for (let transaction of transactions) {
           // get transaction object from serialized transaction
 
@@ -129,11 +171,32 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           );
 
           await connection.confirmTransaction(txid);
-          console.log(`https://solscan.io/tx/${txid}`);
+
+          toast.update(toastId.current, {
+            type: toast.TYPE.SUCCESS,
+            autoClose: 5_000,
+            render: (
+              <div className="flex flex-col">
+                <span> Transaction confirmed 👌</span>
+                <ExplorerButton tx={txid} />
+              </div>
+            ),
+          });
+
+          console.log(txid);
         }
       }
     } catch (e) {
       console.error(e);
+      toast.update(toastId.current, {
+        type: toast.TYPE.ERROR,
+        autoClose: 5_000,
+        render: (
+          <div className="flex flex-col">
+            <span>Transaction failed 🤯</span>
+          </div>
+        ),
+      });
     }
     setIsSubmitting(false);
   };
@@ -144,23 +207,13 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     setOutputTokenInfo(_);
   };
 
-  const bestRoute = routes?.[0];
-  console.log(bestRoute);
-  const marketInfo = bestRoute?.marketInfos;
   const outputAmount =
     bestRoute &&
     (bestRoute.outAmount || 0) / Math.pow(10, outputTokenInfo?.decimals || 1);
 
-  console.log(`Output ${outputAmount} Input ${inputAmout}`);
-
-  console.log(`Pubkey ${publicKey?.toBase58()}`);
-  if (!loaded) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <>
-      <div className="bg-base-200 w-[450px] rounded-[15px] px-5 pb-10 pt-5">
+      <div className="bg-base-200 sm:w-[450px] w-[95%] rounded-[15px] px-5 pb-10 pt-5">
         <div className="relative">
           <Slippage slippage={slippage} setSlippage={setSlippage} />
           <button
@@ -209,27 +262,63 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               />
             </div>
           </div>
-          {bestRoute && bestRoute.marketInfos && outputAmount && (
-            <SwapRoute
-              route={bestRoute.marketInfos}
-              tokenMap={tokenMap}
-              selected={true}
-              amount={outputAmount}
-            />
+          {!bestRoute && (
+            <progress className="progress w-full h-[68px]"></progress>
           )}
+          {bestRoute && bestRoute.marketInfos && outputAmount && (
+            <button onClick={() => setSelectedRoute(bestRoute)}>
+              <SwapRoute
+                isBestRoute={true}
+                route={bestRoute.marketInfos}
+                tokenMap={tokenMap}
+                selected={bestRoute === selectedRoute}
+                amount={outputAmount}
+              />
+            </button>
+          )}
+          {routes
+            ?.slice(1)
+            ?.filter((e) => !!e.marketInfos && !!e.outAmount)
+            .map((r, idx) => {
+              return (
+                <button
+                  onClick={() => setSelectedRoute(r)}
+                  key={`route-${idx}`}
+                >
+                  <SwapRoute
+                    route={r.marketInfos as InlineResponseDefaultMarketInfos[]}
+                    tokenMap={tokenMap}
+                    amount={
+                      (r.outAmount as number) /
+                      Math.pow(10, outputTokenInfo?.decimals || 0)
+                    }
+                    selected={r === selectedRoute}
+                  />
+                </button>
+              );
+            })}
 
           {connected ? (
-            <ButtonBorderGradient
-              onClick={handleSwap}
-              disabled={isSubmitting}
-              buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
-              fromColor="green-400"
-              toColor="blue-500"
-            >
-              {isSubmitting ? "Swapping.." : "Swap"}
-            </ButtonBorderGradient>
+            <div className="mt-4">
+              <ButtonBorderGradient
+                onClick={handleSwap}
+                disabled={isSubmitting || !loaded}
+                buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
+                fromColor="green-400"
+                toColor="blue-500"
+              >
+                {isSubmitting ? (
+                  <div className="flex flex-row justify-center">
+                    <span className="mr-2">Swapping</span>
+                    <Loading />
+                  </div>
+                ) : (
+                  "Swap"
+                )}
+              </ButtonBorderGradient>
+            </div>
           ) : (
-            <div className="flex flex-row justify-center">
+            <div className="flex flex-row justify-center mt-4">
               <WalletModalProvider>
                 <WalletMultiButton />
               </WalletModalProvider>
