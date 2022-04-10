@@ -34,6 +34,39 @@ const Coin = ({ tokenInfo }: { tokenInfo: TokenInfo }) => {
   );
 };
 
+const TOP_COINS = [
+  "EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp", // FIDA
+  "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt", // SRM
+  "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E", // BTC
+  "So11111111111111111111111111111111111111112", // wSOL
+  "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R", // RAY
+  "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac", // Mango
+  "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+  "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So", // mSOL
+];
+
+const TopCoin = ({
+  token,
+  setCoin,
+  id,
+}: {
+  token: TokenInfo;
+  setCoin: React.Dispatch<React.SetStateAction<TokenInfo | null | undefined>>;
+  id: string;
+}) => {
+  return (
+    <label
+      onClick={() => setCoin(token)}
+      htmlFor={`modal-select-${id}`}
+      className="m-1 flex flex-row p-2 border border-[#E4E9EE] rounded-[5px] border-opacity-50 hover:bg-[#E4E9EE] hover:bg-opacity-10 cursor-pointer"
+    >
+      <img className="w-[15px] mr-2" src={token.logoURI} />
+      <span className="text-white text-xs font-bold">{token.symbol}</span>
+    </label>
+  );
+};
+
 export const SelectCoin = ({
   tokenInfo,
   setCoin,
@@ -57,6 +90,8 @@ export const SelectCoin = ({
       ),
     [search, tokenInfo]
   );
+
+  const topList = originalList.filter((e) => TOP_COINS.includes(e.address));
 
   const [list] = useVirtualList(originalList, {
     containerTarget: containerRef,
@@ -86,7 +121,18 @@ export const SelectCoin = ({
         spellCheck={false}
       />
 
-      <div ref={containerRef} className="h-full min-h-[200px] overflow-scroll">
+      <div className="flex flex-row justify-start flex-wrap">
+        {topList.map((e) => (
+          <TopCoin setCoin={setCoin} token={e} id={id.current} />
+        ))}
+      </div>
+
+      <div className="border-[0.5px] mt-2 border-[#E4E9EE] border-opacity-50" />
+
+      <div
+        ref={containerRef}
+        className="h-full min-h-[200px] overflow-scroll overscroll-contain"
+      >
         <div ref={wrapperRef}>
           {list.map((e) => (
             <label

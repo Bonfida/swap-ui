@@ -25,7 +25,7 @@ export const ButtonModal = ({
         {buttonText}
       </label>
       <input type="checkbox" id={ref.current} className="modal-toggle" />
-      <label htmlFor={ref.current} className="modal cursor-pointer">
+      <label htmlFor={ref.current} className="modal cursor-pointer ">
         <label className={clsx("modal-box relative", modalClass)} htmlFor="">
           {children}
         </label>

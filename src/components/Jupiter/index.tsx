@@ -218,14 +218,6 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const outputAmount =
     bestRoute &&
     (bestRoute.outAmount || 0) / Math.pow(10, outputTokenInfo?.decimals || 1);
-  console.log(
-    "hasRoute ",
-    hasRoute,
-    "loadingRoute ",
-    loadingRoute,
-    "hasRoute ",
-    hasRoute
-  );
 
   return (
     <>
@@ -279,7 +271,11 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             </div>
           </div>
           {loadingRoute && (
-            <progress className="progress w-full h-[68px]"></progress>
+            <div className="h-[204px]">
+              <progress className="progress w-full h-[68px]"></progress>
+              <progress className="progress w-full h-[68px]"></progress>
+              <progress className="progress w-full h-[68px]"></progress>
+            </div>
           )}
           {!hasRoute && !loadingRoute && (
             <div className="flex flex-row justify-center">
@@ -287,18 +283,23 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               <img className="h-[30px] w-[30px]" src={emoji} />
             </div>
           )}
-          {bestRoute && bestRoute.marketInfos && outputAmount && hasRoute && (
-            <button onClick={() => setSelectedRoute(bestRoute)}>
-              <SwapRoute
-                isBestRoute={true}
-                route={bestRoute.marketInfos}
-                tokenMap={tokenMap}
-                selected={bestRoute === selectedRoute}
-                amount={outputAmount}
-              />
-            </button>
-          )}
-          {hasRoute &&
+          {!loadingRoute &&
+            bestRoute &&
+            bestRoute.marketInfos &&
+            outputAmount &&
+            hasRoute && (
+              <button onClick={() => setSelectedRoute(bestRoute)}>
+                <SwapRoute
+                  isBestRoute={true}
+                  route={bestRoute.marketInfos}
+                  tokenMap={tokenMap}
+                  selected={bestRoute === selectedRoute}
+                  amount={outputAmount}
+                />
+              </button>
+            )}
+          {!loadingRoute &&
+            hasRoute &&
             routes
               ?.slice(1)
               ?.filter((e) => !!e.marketInfos && !!e.outAmount)

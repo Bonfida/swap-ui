@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Configuration, DefaultApi } from "@jup-ag/api";
 import { TokenInfo, TokenListProvider } from "@solana/spl-token-registry";
 import { CHAIN_ID } from "../constants";
+import axios from "axios";
 
 type RouteMap = Map<string, string[]>;
 
@@ -13,6 +14,16 @@ interface JupiterApiContext {
 }
 
 const JupiterApiContext = React.createContext<JupiterApiContext | null>(null);
+
+const getTokens = async () => {
+  const { data } = await axios.get("https://cache.jup.ag/tokens");
+  return data as TokenInfo[];
+};
+
+const getTopTokens = async () => {
+  const { data } = await axios.get("https://cache.jup.ag/top-tokens");
+  return data as string[];
+};
 
 export const JupiterApiProvider: React.FC<{}> = ({ children }) => {
   const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map());
@@ -26,12 +37,13 @@ export const JupiterApiProvider: React.FC<{}> = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      const [tokens, indexedRouteMapResult] = await Promise.all([
-        new TokenListProvider().resolve(),
+      let [tokenList, topTokens, indexedRouteMapResult] = await Promise.all([
+        getTokens(),
+        getTopTokens(),
         api.v1IndexedRouteMapGet(),
       ]);
-      const tokenList = tokens.filterByChainId(CHAIN_ID).getList();
 
+      tokenList = tokenList.filter((e) => !!topTokens.includes(e.address));
       const { indexedRouteMap = {}, mintKeys = [] } = indexedRouteMapResult;
 
       const routeMap = Object.keys(indexedRouteMap).reduce((routeMap, key) => {
