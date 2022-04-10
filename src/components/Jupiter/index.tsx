@@ -90,7 +90,9 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       })
       .then(({ data }) => {
         if (data) {
-          setHasRoute(true);
+          setHasRoute(
+            data.length > 0 && !!data[0].outAmount && data[0].outAmount > 0
+          );
           setRoutes(data);
         }
       })
@@ -125,7 +127,6 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         possibleOutputs &&
         !possibleOutputs?.includes(outputTokenInfo?.address || "")
       ) {
-        setHasRoute(true);
         setOutputTokenInfo(tokenMap.get(possibleOutputs[0]));
       } else {
         setHasRoute(false);
@@ -284,10 +285,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             </div>
           )}
           {!loadingRoute &&
-            bestRoute &&
-            bestRoute.marketInfos &&
-            outputAmount &&
-            hasRoute && (
+            !!bestRoute &&
+            !!bestRoute.marketInfos &&
+            !!outputAmount &&
+            !!hasRoute && (
               <button onClick={() => setSelectedRoute(bestRoute)}>
                 <SwapRoute
                   isBestRoute={true}
