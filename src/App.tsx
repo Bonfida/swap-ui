@@ -26,7 +26,8 @@ import JupiterForm from "./components/Jupiter";
 
 import "react-toastify/dist/ReactToastify.css";
 // Default styles that can be overridden by your app
-import "@solana/wallet-adapter-react-ui/styles.css";
+// import "@solana/wallet-adapter-react-ui/styles.css";
+import "./wallet.css";
 
 window.Buffer = Buffer;
 
