@@ -26,6 +26,7 @@ import { SwapRoute } from "../SwapRoute";
 import { toast } from "react-toastify";
 import { ExplorerButton } from "../Buttons";
 import Loading from "../Loading";
+import emoji from "../../assets/no-route.png";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -49,8 +50,6 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const { connected, publicKey, signAllTransactions } = useWallet();
   const { connection } = useConnection();
   const { tokenMap, routeMap, loaded, api } = useJupiterApiContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [routes, setRoutes] = useState<
     Awaited<ReturnType<typeof api.v1QuoteGet>>["data"]
   >([]);
@@ -66,6 +65,9 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const [outputTokenInfo, setOutputTokenInfo] = useState<
     TokenInfo | null | undefined
   >(tokenMap.get(OUTPUT_MINT_ADDRESS) as TokenInfo);
+  const [hasRoute, setHasRoute] = useState(false);
+  const [swapping, setSwapping] = useState(false);
+  const [loadingRoute, setLoadingRoute] = useState(true); // Loading by default
 
   const [inputAmout, setInputAmount] = useState("1");
 
@@ -77,7 +79,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   // Good to add debounce here to avoid multiple calls
   const fetchRoute = React.useCallback(() => {
     if (!inputTokenInfo || !outputTokenInfo) return;
-    setIsLoading(true);
+    setLoadingRoute(true);
     api
       .v1QuoteGet({
         amount: parseFloat(inputAmout) * Math.pow(10, inputTokenInfo?.decimals),
@@ -88,11 +90,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       })
       .then(({ data }) => {
         if (data) {
+          setHasRoute(true);
           setRoutes(data);
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setLoadingRoute(false);
       });
   }, [api, inputAmout, inputTokenInfo, outputTokenInfo]);
 
@@ -111,7 +114,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
   useEffect(() => {
     setFirstLoad(false);
-  }, [inputTokenInfo, outputTokenInfo, isLoading]);
+  }, [inputTokenInfo, outputTokenInfo, loadingRoute]);
 
   // ensure outputMint can be swapable to inputMint
   useEffect(() => {
@@ -122,15 +125,20 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         possibleOutputs &&
         !possibleOutputs?.includes(outputTokenInfo?.address || "")
       ) {
+        setHasRoute(true);
         setOutputTokenInfo(tokenMap.get(possibleOutputs[0]));
+      } else {
+        setHasRoute(false);
       }
+    } else {
+      setHasRoute(false);
     }
   }, [inputTokenInfo, outputTokenInfo]);
 
   const handleSwap = async () => {
     try {
-      if (!isLoading && routes?.[0] && publicKey && signAllTransactions) {
-        setIsSubmitting(true);
+      if (!loadingRoute && routes?.[0] && publicKey && signAllTransactions) {
+        setSwapping(true);
         toastId.current = toast("Preparing transaction...", {
           type: toast.TYPE.INFO,
           autoClose: false,
@@ -198,7 +206,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         ),
       });
     }
-    setIsSubmitting(false);
+    setSwapping(false);
   };
 
   const handleSwitch = () => {
@@ -210,15 +218,23 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const outputAmount =
     bestRoute &&
     (bestRoute.outAmount || 0) / Math.pow(10, outputTokenInfo?.decimals || 1);
+  console.log(
+    "hasRoute ",
+    hasRoute,
+    "loadingRoute ",
+    loadingRoute,
+    "hasRoute ",
+    hasRoute
+  );
 
   return (
     <>
-      <div className="bg-base-200 sm:w-[450px] w-[95%] rounded-[15px] px-5 pb-10 pt-5">
+      <div className="bg-base-200 sm:w-[450px] w-[95%] rounded-[15px] px-5 pb-10 pt-5 mb-5 sm:mb-0 mt-3 sm:mt-0">
         <div className="relative">
           <Slippage slippage={slippage} setSlippage={setSlippage} />
           <button
             onClick={fetchRoute}
-            disabled={isLoading}
+            disabled={loadingRoute}
             type="button"
             className="absolute top-0 bg-gray-200 btn btn-sm btn-circle right-2 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20"
           >
@@ -262,10 +278,16 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               />
             </div>
           </div>
-          {!bestRoute && (
+          {loadingRoute && (
             <progress className="progress w-full h-[68px]"></progress>
           )}
-          {bestRoute && bestRoute.marketInfos && outputAmount && (
+          {!hasRoute && !loadingRoute && (
+            <div className="flex flex-row justify-center">
+              <span className="text-lg font-bold mr-2">No route found</span>
+              <img className="h-[30px] w-[30px]" src={emoji} />
+            </div>
+          )}
+          {bestRoute && bestRoute.marketInfos && outputAmount && hasRoute && (
             <button onClick={() => setSelectedRoute(bestRoute)}>
               <SwapRoute
                 isBestRoute={true}
@@ -276,38 +298,41 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               />
             </button>
           )}
-          {routes
-            ?.slice(1)
-            ?.filter((e) => !!e.marketInfos && !!e.outAmount)
-            .map((r, idx) => {
-              return (
-                <button
-                  onClick={() => setSelectedRoute(r)}
-                  key={`route-${idx}`}
-                >
-                  <SwapRoute
-                    route={r.marketInfos as InlineResponseDefaultMarketInfos[]}
-                    tokenMap={tokenMap}
-                    amount={
-                      (r.outAmount as number) /
-                      Math.pow(10, outputTokenInfo?.decimals || 0)
-                    }
-                    selected={r === selectedRoute}
-                  />
-                </button>
-              );
-            })}
+          {hasRoute &&
+            routes
+              ?.slice(1)
+              ?.filter((e) => !!e.marketInfos && !!e.outAmount)
+              .map((r, idx) => {
+                return (
+                  <button
+                    onClick={() => setSelectedRoute(r)}
+                    key={`route-${idx}`}
+                  >
+                    <SwapRoute
+                      route={
+                        r.marketInfos as InlineResponseDefaultMarketInfos[]
+                      }
+                      tokenMap={tokenMap}
+                      amount={
+                        (r.outAmount as number) /
+                        Math.pow(10, outputTokenInfo?.decimals || 0)
+                      }
+                      selected={r === selectedRoute}
+                    />
+                  </button>
+                );
+              })}
 
           {connected ? (
             <div className="mt-4">
               <ButtonBorderGradient
                 onClick={handleSwap}
-                disabled={isSubmitting || !loaded}
+                disabled={swapping || !loaded || !hasRoute}
                 buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
                 fromColor="green-400"
                 toColor="blue-500"
               >
-                {isSubmitting ? (
+                {swapping ? (
                   <div className="flex flex-row justify-center">
                     <span className="mr-2">Swapping</span>
                     <Loading />

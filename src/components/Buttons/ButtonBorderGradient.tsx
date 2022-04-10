@@ -34,7 +34,11 @@ export const ButtonBorderGradient = ({
         onClick={onClick}
         type="button"
         disabled={!!disabled}
-        className={clsx("w-full h-full rounded-[8.5px]", buttonClass)}
+        className={clsx(
+          "w-full h-full rounded-[8.5px]",
+          buttonClass,
+          disabled ? "cursor-not-allowed" : undefined
+        )}
       >
         {children}
       </button>

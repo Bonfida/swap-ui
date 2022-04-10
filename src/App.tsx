@@ -54,11 +54,13 @@ const App = () => {
     <ConnectionProvider endpoint={endpoint as string}>
       <WalletProvider wallets={wallets} autoConnect>
         <JupiterApiProvider>
-          <TopBar />
-          <div className="min-h-screen flex flex-col justify-center items-center bg-neutral">
-            <JupiterForm />
+          <div className="bg-neutral">
+            <TopBar />
+            <div className="min-h-screen flex flex-col justify-center items-center bg-neutral">
+              <JupiterForm />
+            </div>
+            <Footer />
           </div>
-          <Footer />
         </JupiterApiProvider>
       </WalletProvider>
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />

@@ -55,7 +55,7 @@ export const SelectCoin = ({
           e.name.includes(search) ||
           e.symbol.includes(search)
       ),
-    [search]
+    [search, tokenInfo]
   );
 
   const [list] = useVirtualList(originalList, {
