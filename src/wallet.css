@@ -114,7 +114,7 @@
 }
 
 .wallet-adapter-dropdown-list-item:not([disabled]):hover {
-    background-color: #1a1f2e;
+    background-color: rgb(37, 41, 50);
 }
 
 .wallet-adapter-modal-collapse-button svg {
