@@ -61,7 +61,7 @@ const TopCoin = ({
       htmlFor={`modal-select-${id}`}
       className="m-1 flex flex-row p-2 border border-[#E4E9EE] rounded-[5px] border-opacity-50 hover:bg-[#E4E9EE] hover:bg-opacity-10 cursor-pointer"
     >
-      <img className="w-[15px] mr-2" src={token.logoURI} />
+      <img className="w-[18px] h-[18px] mr-2" src={token.logoURI} />
       <span className="text-white text-xs font-bold">{token.symbol}</span>
     </label>
   );
