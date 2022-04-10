@@ -23,15 +23,18 @@ import { RPC_URL } from "./settings/rpc";
 import { JupiterApiProvider } from "./contexts";
 import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
+import { useLocalStorageState } from "ahooks";
 
 import "react-toastify/dist/ReactToastify.css";
-// Default styles that can be overridden by your app
-// import "@solana/wallet-adapter-react-ui/styles.css";
+
+// Override @solana/wallet-adapter-react-ui/styles.css
 import "./wallet.css";
 
 window.Buffer = Buffer;
 
 const App = () => {
+  const [customRpc, setCustomRpc] = useLocalStorageState<string>("customRpc");
+
   const network = WalletAdapterNetwork.Mainnet;
   const wallets = useMemo(
     () => [
@@ -49,14 +52,14 @@ const App = () => {
     [network]
   );
 
-  const endpoint = useMemo(() => RPC_URL, []);
+  const endpoint = useMemo(() => customRpc || RPC_URL, [customRpc]);
 
   return (
     <ConnectionProvider endpoint={endpoint as string}>
       <WalletProvider wallets={wallets} autoConnect>
         <JupiterApiProvider>
           <div className="bg-neutral">
-            <TopBar />
+            <TopBar setCustomRpc={setCustomRpc} />
             <div className="min-h-screen flex flex-col justify-center items-center bg-neutral">
               <JupiterForm />
             </div>

@@ -1,35 +1,57 @@
 import { ReactNode, useRef } from "react";
 import clsx from "clsx";
-import { nanoid } from "nanoid";
+import { useClickAway } from "ahooks";
 
 export const ButtonModal = ({
   children,
   buttonText,
   buttonClass,
   modalClass,
-  id,
+  visible,
+  setVisible,
 }: {
   children: ReactNode;
   buttonText: ReactNode;
   buttonClass?: string;
   modalClass?: string;
-  id?: string;
+  visible?: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const ref = useRef(`modal-${id || nanoid()}`);
+  const clickAwayRef = useRef<HTMLDivElement>(null);
+
+  useClickAway(
+    () => {
+      setVisible(false);
+    },
+    clickAwayRef,
+    "mousedown"
+  );
+
   return (
     <>
-      <label
-        htmlFor={ref.current}
+      <button
+        type="button"
+        onClick={() => setVisible(true)}
         className={clsx("btn modal-button", buttonClass)}
       >
         {buttonText}
-      </label>
-      <input type="checkbox" id={ref.current} className="modal-toggle" />
-      <label htmlFor={ref.current} className="modal cursor-pointer ">
-        <label className={clsx("modal-box relative", modalClass)} htmlFor="">
-          {children}
-        </label>
-      </label>
+      </button>
+      <input
+        type="checkbox"
+        className="modal-toggle"
+        onChange={() => setVisible((prev) => !prev)}
+        checked={visible}
+      />
+      {visible && (
+        <div className="modal ">
+          <div
+            className={clsx("modal-box relative", modalClass)}
+            ref={clickAwayRef}
+          >
+            {children}
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -6,8 +6,9 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useSmallScreen } from "../../../hooks";
 import { Logo } from "./Logo";
+import { RpcSettings } from "../../RpcSettings";
 
-const TopBar = () => {
+const TopBar = ({ setCustomRpc }: { setCustomRpc: (url: string) => void }) => {
   const { connected } = useWallet();
   const smallScreen = useSmallScreen();
   if (smallScreen) {
@@ -24,7 +25,8 @@ const TopBar = () => {
       <div className="absolute top-5 left-4">
         <Logo />
       </div>
-      <div className="absolute mt-3 top-3 right-4">
+      <div className="absolute mt-3 top-3 right-4 flex flex-row">
+        <RpcSettings setCustomRpc={setCustomRpc} />
         <WalletModalProvider>
           {connected ? <WalletDisconnectButton /> : <WalletMultiButton />}
         </WalletModalProvider>

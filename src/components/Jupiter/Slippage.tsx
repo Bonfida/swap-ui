@@ -1,8 +1,7 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { ButtonModal, ButtonBorderGradient } from "../Buttons";
 import { AdjustmentsIcon, InformationCircleIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
-import { nanoid } from "nanoid";
 
 const OPTIONS = [1, 5, 10];
 
@@ -13,8 +12,8 @@ export const Slippage = ({
   slippage: number;
   setSlippage: (arg: number) => void;
 }) => {
-  const id = useRef(nanoid());
   const [input, setInput] = useState<number | null>(null);
+  const [visible, setVisible] = useState(false);
 
   const custom = !OPTIONS.includes(input || -1);
 
@@ -22,11 +21,13 @@ export const Slippage = ({
 
   const handleSave = () => {
     input && setSlippage(input);
+    setVisible(false);
   };
 
   return (
     <ButtonModal
-      id={`settings-slippage-${id.current}`}
+      visible={visible}
+      setVisible={setVisible}
       buttonClass="bg-gray-200 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20 btn-sm"
       buttonText={
         <div className="flex flex-row items-center">
@@ -84,10 +85,8 @@ export const Slippage = ({
           </div>
         )}
       </div>
-      <label
-        htmlFor={`modal-settings-slippage-${
-          canSubmit ? id.current : undefined
-        }`}
+      <button
+        type="button"
         onClick={handleSave}
         className={clsx(
           "btn w-full mt-5",
@@ -95,7 +94,7 @@ export const Slippage = ({
         )}
       >
         Save settings
-      </label>
+      </button>
     </ButtonModal>
   );
 };
