@@ -16,5 +16,8 @@ export const useTokenAccounts = () => {
       .filter((e) => !!e) as RawAccount[];
   };
 
-  return useRequest(fn, { refreshDeps: [connected], pollingInterval: 5_000 });
+  return useRequest(fn, {
+    refreshDeps: [connected, publicKey, connection.rpcEndpoint],
+    pollingInterval: 5_000,
+  });
 };
