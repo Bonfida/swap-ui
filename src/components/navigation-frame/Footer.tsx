@@ -1,6 +1,13 @@
 import fida from "../../assets/fida.svg";
 import Urls from "../../settings/urls";
 
+const ITEMS = [
+  { name: "Twitter", url: Urls.twitter },
+  { name: "Website", url: Urls.website },
+  { name: "Github", url: Urls.github },
+  { name: "Old version", url: Urls.oldDex },
+];
+
 const Footer = () => {
   return (
     <footer className="p-10 footer footer-center bg-gradient-to-r from-green-400 to-blue-500 text-primary-content">
@@ -12,15 +19,16 @@ const Footer = () => {
       </div>
       <div>
         <div className="grid grid-flow-col gap-4 font-bold">
-          <a rel="noopener noreferrer" target="_blank" href={Urls.twitter}>
-            Twitter
-          </a>
-          <a rel="noopener noreferrer" target="_blank" href={Urls.website}>
-            Website
-          </a>
-          <a rel="noopener noreferrer" target="_blank" href={Urls.github}>
-            Github
-          </a>
+          {ITEMS.map((e, idx) => (
+            <a
+              key={`footer-${idx}`}
+              rel="noopener noreferrer"
+              target="_blank"
+              href={e.url}
+            >
+              {e.name}
+            </a>
+          ))}
         </div>
       </div>
     </footer>

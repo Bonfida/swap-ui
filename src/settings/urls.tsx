@@ -4,6 +4,7 @@ const Urls = {
   website: "https://bonfida.org/",
   solscanAddress: "https://solscan.io/account/",
   solscanTx: "https://solscan.io/tx/",
+  oldDex: "https://deprecated-dex.bonfida.org",
 };
 
 export default Urls;
