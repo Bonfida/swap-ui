@@ -4,6 +4,7 @@ import { useJupiterApiContext } from "../../contexts";
 import { TokenInfo } from "@solana/spl-token-registry";
 import { useVirtualList } from "ahooks";
 import { ChevronDownIcon } from "@heroicons/react/solid";
+import defaultCoin from "../../assets/default-coin.png";
 
 const Row = ({
   info,
@@ -19,9 +20,16 @@ const Row = ({
       className="flex flex-row items-center justify-start w-full p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
     >
       <div>
-        <img src={info.logoURI} className="h-[35px]" />
+        <img
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultCoin;
+          }}
+          src={info.logoURI}
+          className="h-[35px]"
+        />
       </div>
-      <div className="flex flex-col ml-3">
+      <div className="flex flex-col items-start ml-3">
         <span className="font-bold text-md">{info.symbol}</span>
         <span className="text-sm opacity-80">{info.name}</span>
       </div>
@@ -92,8 +100,8 @@ export const SelectCoin = ({
       Array.from(tokenMap.values()).filter(
         (e) =>
           e.address.includes(search) ||
-          e.name.includes(search) ||
-          e.symbol.includes(search)
+          e.name.toLowerCase().includes(search.toLowerCase()) ||
+          e.symbol.toLowerCase().includes(search.toLowerCase())
       ),
     [search, tokenInfo]
   );
