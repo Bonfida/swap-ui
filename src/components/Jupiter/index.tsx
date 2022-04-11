@@ -24,7 +24,6 @@ import {
 } from "@jup-ag/api";
 import { SwapRoute } from "../SwapRoute";
 import { toast } from "react-toastify";
-import { ExplorerButton } from "../Buttons";
 import Loading from "../Loading";
 import emoji from "../../assets/no-route.png";
 import { getFeeAddress } from "../../utils/fees";

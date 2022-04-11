@@ -23,11 +23,12 @@ export const ButtonBorderGradient = ({
   return (
     <div
       className={clsx(
-        "rounded-[10px] bg-gradient-to-r p-[1.5px]",
+        "rounded-[10px] bg-gradient-to-r p-[2px]",
         `from-${fromColor}`,
         viaColor ? `via-${viaColor}` : undefined,
         `to-${toColor}`,
-        containerClass
+        containerClass,
+        "animate-gradient-x"
       )}
     >
       <button
@@ -35,7 +36,7 @@ export const ButtonBorderGradient = ({
         type="button"
         disabled={!!disabled}
         className={clsx(
-          "w-full h-full rounded-[8.5px]",
+          "w-full h-full rounded-[9px]",
           buttonClass,
           disabled ? "cursor-not-allowed" : undefined
         )}

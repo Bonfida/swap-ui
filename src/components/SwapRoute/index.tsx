@@ -3,13 +3,6 @@ import { TokenInfo } from "@solana/spl-token-registry";
 import { formatTokens, formatRoute } from "../../utils/swap-route";
 import clsx from "clsx";
 
-/**
- *
- * TODO
- * - Add loading state
- * - Add non selected route state
- */
-
 export const SwapRoute = ({
   selected,
   route,
@@ -28,7 +21,8 @@ export const SwapRoute = ({
       className={clsx(
         "relative",
         selected && "bg-gradient-to-r from-green-400 to-blue-500",
-        "p-[2px] rounded-[6px]"
+        "p-[2px] rounded-[6px]",
+        "animate-gradient-x"
       )}
     >
       {/* Badge */}
