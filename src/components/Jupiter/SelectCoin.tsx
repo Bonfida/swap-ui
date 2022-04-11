@@ -130,7 +130,7 @@ export const SelectCoin = ({
         type="text"
         id="search-token"
         placeholder="Search"
-        className="w-full mb-3 text-xs sm:text-md input input-bordered input-info"
+        className="w-full mb-3 text-xs font-bold sm:text-lg input input-bordered input-info"
         spellCheck={false}
       />
 

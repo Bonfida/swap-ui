@@ -43,7 +43,8 @@ export const JupiterApiProvider: React.FC<{}> = ({ children }) => {
         api.v1IndexedRouteMapGet(),
       ]);
 
-      tokenList = tokenList.filter((e) => !!topTokens.includes(e.address));
+      tokenList = tokenList; //.filter((e) => !!topTokens.includes(e.address));
+
       const { indexedRouteMap = {}, mintKeys = [] } = indexedRouteMapResult;
 
       const routeMap = Object.keys(indexedRouteMap).reduce((routeMap, key) => {
