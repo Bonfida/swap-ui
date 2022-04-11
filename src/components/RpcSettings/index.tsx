@@ -1,7 +1,6 @@
-import { useState, useRef, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { CogIcon } from "@heroicons/react/solid";
 import { ButtonModal, ButtonBorderGradient } from "../Buttons";
-import { nanoid } from "nanoid";
 import { RPC_URL } from "../../settings/rpc";
 import { Listbox, Transition } from "@headlessui/react";
 import {
@@ -30,17 +29,13 @@ export const RpcSettings = ({
 }: {
   setCustomRpc: (url: string) => void;
 }) => {
-  const id = useRef(nanoid());
   const [selected, setSelected] = useState(RPCS[0]);
   const [input, setInput] = useState("");
   const [custom, setCustom] = useState(false);
-  const { data: validUrl, loading } = useValidateRpc(input);
+  const { data: validUrl, loading } = useValidateRpc(
+    !!input ? input : selected.url
+  );
   const [visible, setVisible] = useState(false);
-  const clickAwayRef = useRef<HTMLDivElement>(null);
-
-  useClickAway(() => {
-    setVisible(false);
-  }, clickAwayRef);
 
   useEffect(() => {
     const isCustom = !RPCS.find(({ url }) => input === url);
@@ -60,8 +55,10 @@ export const RpcSettings = ({
 
   const handleSave = () => {
     setVisible(false);
-    setCustomRpc(custom ? input : selected.url);
-    toast.info(`RPC node updated 👌`);
+    if (validUrl) {
+      setCustomRpc(custom ? input : selected.url);
+      toast.info(`RPC node updated 👌`);
+    }
   };
 
   return (

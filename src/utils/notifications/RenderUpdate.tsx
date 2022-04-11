@@ -4,9 +4,11 @@ import { ExplorerButton } from "../../components/Buttons";
 export const RenderUpdate = ({
   updateText,
   signature,
+  load,
 }: {
   updateText: string;
   signature?: string;
+  load?: boolean;
 }) => {
   if (signature) {
     return (
@@ -18,7 +20,7 @@ export const RenderUpdate = ({
   }
   return (
     <div className="flex flex-row items-center">
-      <span className="mr-2">{updateText} </span> <Loading />
+      <span className="mr-2">{updateText} </span> {load && <Loading />}
     </div>
   );
 };

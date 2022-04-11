@@ -140,14 +140,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     }
   }, [inputTokenInfo, outputTokenInfo]);
 
-  console.log(toastId.current);
-
   const handleSwap = async () => {
     if (!outputTokenInfo?.address) return;
     try {
       if (!loadingRoute && selectedRoute && publicKey && signAllTransactions) {
         setSwapping(true);
-        toast(<RenderUpdate updateText="Preparing transaction" />, {
+        toast(<RenderUpdate updateText="Preparing transaction" load={true} />, {
           type: toast.TYPE.INFO,
           autoClose: false,
           toastId: toastId.current,
@@ -191,7 +189,9 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         toast.update(toastId.current, {
           type: toast.TYPE.INFO,
           autoClose: false,
-          render: () => <RenderUpdate updateText="Sending transaction" />,
+          render: () => (
+            <RenderUpdate updateText="Sending transaction" load={true} />
+          ),
           toastId: toastId.current,
         });
 
@@ -212,6 +212,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               <RenderUpdate
                 updateText="Transaction confirmed 👌"
                 signature={txid}
+                load={true}
               />
             ),
             toastId: toastId.current,
@@ -225,7 +226,9 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       toast.update(toastId.current, {
         type: toast.TYPE.ERROR,
         autoClose: 5_000,
-        render: () => <RenderUpdate updateText="Transaction failed 🤯" />,
+        render: () => (
+          <RenderUpdate updateText="Transaction failed 🤯" load={false} />
+        ),
       });
     }
     setSwapping(false);
