@@ -16,7 +16,7 @@ import {
   WalletMultiButton,
   WalletModalProvider,
 } from "@solana/wallet-adapter-react-ui";
-import { useLocalStorageState } from "ahooks";
+import { useLocalStorageState, useInterval } from "ahooks";
 import { Slippage } from "./Slippage";
 import {
   InlineResponseDefaultMarketInfos,
@@ -158,7 +158,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           feeTx.feePayer = publicKey;
           feeTx.recentBlockhash = blockhash;
           const sig = await sendTransaction(feeTx, connection);
-          await connection.confirmTransaction(sig, "confirmed");
+          await connection.confirmTransaction(sig, "processed");
         }
 
         const { swapTransaction, setupTransaction, cleanupTransaction } =
@@ -196,7 +196,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             transaction.serialize()
           );
 
-          await connection.confirmTransaction(txid);
+          await connection.confirmTransaction(txid, "processed");
 
           toast.update(toastId.current, {
             type: toast.TYPE.SUCCESS,
@@ -242,6 +242,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     fetchRoute();
     refreshToken();
   };
+
+  useInterval(() => {
+    refresh();
+  }, 15_000);
 
   return (
     <>

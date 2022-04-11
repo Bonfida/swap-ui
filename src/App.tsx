@@ -58,15 +58,19 @@ const App = () => {
     [network]
   );
 
-  const endpoint = useMemo(() => customRpc || RPC_URL, [customRpc]);
+  const endpoint = useMemo(() => customRpc || (RPC_URL as string), [customRpc]);
+
+  const isGenGo = endpoint?.includes("genesysgo");
 
   return (
     <ConnectionProvider
       endpoint={endpoint as string}
       config={{
-        fetchMiddleware: tokenAuthFetchMiddleware({
-          getToken,
-        }),
+        fetchMiddleware: isGenGo
+          ? tokenAuthFetchMiddleware({
+              getToken,
+            })
+          : undefined,
       }}
     >
       <WalletProvider wallets={wallets} autoConnect>
