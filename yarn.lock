@@ -722,6 +722,14 @@
     eventemitter3 "^4.0.7"
     uuid "^8.3.2"
 
+"@strata-foundation/web3-token-auth@^3.4.6":
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/@strata-foundation/web3-token-auth/-/web3-token-auth-3.4.6.tgz#8b87f43fad60d8762f0e7a7539f0f85ca8e6932c"
+  integrity sha512-gh4khNGb5hB0K/+DdXJfU68of7xUF1GKPL0moR47fO/1fuZdmZq9bUBc/Xdsr1vhRFegoMJR/dwL58kDi1bGXw==
+  dependencies:
+    "@solana/web3.js" "^1.32.0"
+    localstorage-memory "^1.0.3"
+
 "@toruslabs/base-controllers@^1.4.2":
   version "1.6.13"
   resolved "https://registry.yarnpkg.com/@toruslabs/base-controllers/-/base-controllers-1.6.13.tgz#1d0fb3bf2c82a268cfede202e1f70ebe6068b805"
@@ -2351,6 +2359,11 @@ lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
+
+localstorage-memory@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/localstorage-memory/-/localstorage-memory-1.0.3.tgz#566b37968fe0c4d76ba36a6da564fa613945ca72"
+  integrity sha512-t9P8WB6DcVttbw/W4PIE8HOqum8Qlvx5SjR6oInwR9Uia0EEmyUeBh7S+weKByW+l/f45Bj4L/dgZikGFDM6ng==
 
 lodash-es@^4.17.21:
   version "4.17.21"

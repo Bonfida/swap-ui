@@ -24,6 +24,8 @@ import { JupiterApiProvider } from "./contexts";
 import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
 import { useLocalStorageState } from "ahooks";
+import { tokenAuthFetchMiddleware } from "@strata-foundation/web3-token-auth";
+import { getToken } from "./utils/rpc";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -55,12 +57,19 @@ const App = () => {
   const endpoint = useMemo(() => customRpc || RPC_URL, [customRpc]);
 
   return (
-    <ConnectionProvider endpoint={endpoint as string}>
+    <ConnectionProvider
+      endpoint={endpoint as string}
+      config={{
+        fetchMiddleware: tokenAuthFetchMiddleware({
+          getToken,
+        }),
+      }}
+    >
       <WalletProvider wallets={wallets} autoConnect>
         <JupiterApiProvider>
           <div className="bg-neutral">
             <TopBar setCustomRpc={setCustomRpc} />
-            <div className="min-h-screen flex flex-col justify-center items-center bg-neutral">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-neutral">
               <JupiterForm />
             </div>
             <Footer />
