@@ -309,10 +309,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             </div>
           </div>
           {loadingRoute && (
-            <div className="h-[204px]">
-              <progress className="progress w-full h-[68px]"></progress>
-              <progress className="progress w-full h-[68px]"></progress>
-              <progress className="progress w-full h-[68px]"></progress>
+            <div className="h-[216px]">
+              <progress className="progress w-full h-[72px]"></progress>
+              <progress className="progress w-full h-[72px]"></progress>
+              <progress className="progress w-full h-[72px]"></progress>
             </div>
           )}
           {!hasRoute && !loadingRoute && (
