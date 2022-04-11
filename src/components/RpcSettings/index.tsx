@@ -38,12 +38,13 @@ export const RpcSettings = ({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const isCustom = !RPCS.find(({ url }) => input === url);
-    if (isCustom) {
+    const rpc = RPCS.find(({ url }) => input === url);
+    if (!rpc) {
       setCustom(true);
       setSelected(RPCS[2]);
     } else {
       setCustom(false);
+      setSelected(rpc);
     }
   }, [input, custom]);
 
