@@ -16,7 +16,7 @@ const Row = ({
     <button
       type="button"
       onClick={() => handleSelect(info)}
-      className="flex flex-row items-center justify-start p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
+      className="flex flex-row items-center justify-start w-full p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
     >
       <div>
         <img src={info.logoURI} className="h-[35px]" />

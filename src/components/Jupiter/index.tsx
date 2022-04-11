@@ -29,6 +29,8 @@ import emoji from "../../assets/no-route.png";
 import { getFeeAddress } from "../../utils/fees";
 import { RenderUpdate } from "../../utils/notifications";
 import { nanoid } from "nanoid";
+import { Balance } from "./Balance";
+import { useTokenAccounts } from "../../hooks";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -39,12 +41,6 @@ export const OUTPUT_MINT_ADDRESS =
 import { useJupiterApiContext } from "../../contexts";
 
 interface IJupiterFormProps {}
-interface IState {
-  amount: number;
-  inputMint: PublicKey;
-  outputMint: PublicKey;
-  slippage: number;
-}
 
 const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const toastId = useRef(nanoid());
@@ -71,7 +67,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const [hasRoute, setHasRoute] = useState(false);
   const [swapping, setSwapping] = useState(false);
   const [loadingRoute, setLoadingRoute] = useState(true); // Loading by default
-
+  const { data: tokenAccounts, refresh } = useTokenAccounts();
   const [inputAmout, setInputAmount] = useState("1");
 
   useMemo(() => {
@@ -130,8 +126,6 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         possibleOutputs &&
         !possibleOutputs?.includes(outputTokenInfo?.address || "")
       ) {
-        setOutputTokenInfo(tokenMap.get(possibleOutputs[0]));
-      } else {
         setHasRoute(false);
       }
     } else {
@@ -230,6 +224,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         ),
       });
     }
+    refresh();
     setSwapping(false);
   };
 
@@ -259,7 +254,14 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         </div>
 
         <div className="flex flex-col justify-between mt-10">
-          <span className="ml-3 font-bold text-white">You pay</span>
+          <div className="flex flex-row justify-between">
+            <span className="ml-3 font-bold text-white">You pay</span>
+            <Balance
+              tokenAccounts={tokenAccounts}
+              token={inputTokenInfo}
+              setInput={setInputAmount}
+            />
+          </div>
           <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
             <input
               value={inputAmout}
@@ -282,7 +284,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             />
           </div>
 
-          <span className="ml-3 font-bold text-white">You receive</span>
+          <div className="flex flex-row justify-between mt-5">
+            <span className="ml-3 font-bold text-white">You receive</span>
+            <Balance tokenAccounts={tokenAccounts} token={outputTokenInfo} />
+          </div>
           <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
             <div className="absolute text-xl font-bold text-right bg-transparent right-4 top-6 input">
               {outputAmount}
