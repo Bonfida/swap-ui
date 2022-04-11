@@ -26,6 +26,7 @@ import JupiterForm from "./components/Jupiter";
 import { useLocalStorageState } from "ahooks";
 import { tokenAuthFetchMiddleware } from "@strata-foundation/web3-token-auth";
 import { getToken } from "./utils/rpc";
+import { Warning } from "./components/Warning";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -36,6 +37,9 @@ window.Buffer = Buffer;
 
 const App = () => {
   const [customRpc, setCustomRpc] = useLocalStorageState<string>("customRpc");
+  const [visible, setVisible] = useLocalStorageState<boolean>("warning", {
+    defaultValue: true,
+  });
 
   const network = WalletAdapterNetwork.Mainnet;
   const wallets = useMemo(
@@ -74,6 +78,7 @@ const App = () => {
             </div>
             <Footer />
           </div>
+          <Warning visible={visible} setVisible={setVisible} />
         </JupiterApiProvider>
       </WalletProvider>
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />

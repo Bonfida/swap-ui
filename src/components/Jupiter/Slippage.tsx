@@ -85,16 +85,16 @@ export const Slippage = ({
           </div>
         )}
       </div>
-      <button
-        type="button"
+      <ButtonBorderGradient
         onClick={handleSave}
-        className={clsx(
-          "btn w-full mt-5",
-          canSubmit ? undefined : "btn-disabled"
-        )}
+        disabled={!canSubmit}
+        containerClass="mt-5"
+        buttonClass="bg-black w-full p-2 uppercase font-bold h-[50px]"
+        fromColor="green-400"
+        toColor="blue-500"
       >
         Save settings
-      </button>
+      </ButtonBorderGradient>
     </ButtonModal>
   );
 };

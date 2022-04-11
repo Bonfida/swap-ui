@@ -6,6 +6,9 @@ const Urls = {
   solscanTx: "https://solscan.io/tx/",
   oldDex: "https://deprecated-dex.bonfida.org",
   jupiter: "https://docs.jup.ag/",
+  google: "https://google.com",
+  rules: "https://rules.bonfida.org/",
+  risks: "https://risks.bonfida.org/",
 };
 
 export default Urls;

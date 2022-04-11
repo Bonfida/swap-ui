@@ -1,5 +1,6 @@
 import fida from "../../assets/fida.svg";
 import Urls from "../../settings/urls";
+import { Link } from "../Link";
 
 const ITEMS = [
   { name: "Twitter", url: Urls.twitter },
@@ -21,14 +22,9 @@ const Footer = () => {
       <div>
         <div className="grid gap-4 font-bold grid-col sm:grid-flow-col">
           {ITEMS.map((e, idx) => (
-            <a
-              key={`footer-${idx}`}
-              rel="noopener noreferrer"
-              target="_blank"
-              href={e.url}
-            >
+            <Link key={`footer-${idx}`} href={e.url}>
               {e.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
