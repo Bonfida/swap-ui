@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/solid";
 import { useValidateRpc } from "../../hooks";
 import { toast } from "react-toastify";
-import { useClickAway } from "ahooks";
+import clsx from "clsx";
 
 interface IRpc {
   name: string;
@@ -132,13 +132,23 @@ export const RpcSettings = ({
         </div>
 
         {/* Input */}
-        <input
-          value={custom ? input : selected.url}
-          onChange={(e) => setInput(e.target.value.trim())}
-          placeholder={selected.url}
-          type="text"
-          className="w-full h-[60px] mt-5 rounded-md bg-neutral focus:outline-none p-2 text-lg font-bold"
-        />
+        <div className="mt-5">
+          <div
+            className={clsx(
+              custom && "bg-gradient-to-r from-green-400 to-blue-500",
+              "p-[2px] rounded-[6px] h-[50px]",
+              "h-[60px]"
+            )}
+          >
+            <input
+              value={custom ? input : selected.url}
+              onChange={(e) => setInput(e.target.value.trim())}
+              placeholder={selected.url}
+              type="text"
+              className="w-full h-full p-2 text-lg font-bold rounded-[5px] bg-neutral focus:outline-none"
+            />
+          </div>
+        </div>
 
         <div className="flex flex-row items-center justify-center mt-4 h-[24px]">
           {!loading && !validUrl && (

@@ -59,7 +59,7 @@ export const Slippage = ({
             className={clsx(
               "relative",
               custom && "bg-gradient-to-r from-green-400 to-blue-500",
-              "p-[1.5px] rounded-lg h-[50px]"
+              "p-[2px] rounded-[6px] h-[50px]"
             )}
           >
             <input
@@ -69,7 +69,7 @@ export const Slippage = ({
               type="number"
               max={100}
               min={0}
-              className="w-full h-full pr-10 text-lg font-bold text-right rounded-md bg-neutral focus:outline-none"
+              className="w-full h-full pr-10 text-lg font-bold text-right rounded-[5px] bg-neutral focus:outline-none"
             />
             <span className="absolute text-lg font-bold top-3 right-5">%</span>
           </div>
