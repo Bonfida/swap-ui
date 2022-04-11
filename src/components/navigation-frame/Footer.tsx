@@ -6,6 +6,7 @@ const ITEMS = [
   { name: "Website", url: Urls.website },
   { name: "Github", url: Urls.github },
   { name: "Old version", url: Urls.oldDex },
+  { name: "Jupiter", url: Urls.jupiter },
 ];
 
 const Footer = () => {
@@ -18,7 +19,7 @@ const Footer = () => {
         </p>
       </div>
       <div>
-        <div className="grid grid-flow-col gap-4 font-bold">
+        <div className="grid gap-4 font-bold grid-col sm:grid-flow-col">
           {ITEMS.map((e, idx) => (
             <a
               key={`footer-${idx}`}
