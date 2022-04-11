@@ -3,8 +3,10 @@ import { ButtonModal } from "../Buttons";
 import { useJupiterApiContext } from "../../contexts";
 import { TokenInfo } from "@solana/spl-token-registry";
 import { useVirtualList } from "ahooks";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, LinkIcon } from "@heroicons/react/solid";
 import defaultCoin from "../../assets/default-coin.png";
+import { Link } from "../Link";
+import Urls from "../../settings/urls";
 
 const Row = ({
   info,
@@ -16,23 +18,30 @@ const Row = ({
   return (
     <button
       type="button"
-      onClick={() => handleSelect(info)}
-      className="flex flex-row items-center justify-start w-full p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
+      className="flex flex-row items-center justify-between w-full p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
     >
-      <div>
-        <img
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null; // prevents looping
-            currentTarget.src = defaultCoin;
-          }}
-          src={info.logoURI}
-          className="h-[35px]"
-        />
+      <div
+        onClick={() => handleSelect(info)}
+        className="flex flex-row items-center w-full h-full"
+      >
+        <div>
+          <img
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = defaultCoin;
+            }}
+            src={info.logoURI}
+            className="h-[35px] w-[35px]"
+          />
+        </div>
+        <div className="flex flex-col items-start ml-3">
+          <span className="font-bold text-md">{info.symbol}</span>
+          <span className="text-sm opacity-80">{info.name}</span>
+        </div>
       </div>
-      <div className="flex flex-col items-start ml-3">
-        <span className="font-bold text-md">{info.symbol}</span>
-        <span className="text-sm opacity-80">{info.name}</span>
-      </div>
+      <Link className="btn z-1" href={Urls.solscanAddress + info.address}>
+        <LinkIcon className="h-[20px]" />
+      </Link>
     </button>
   );
 };
@@ -40,7 +49,14 @@ const Row = ({
 const Coin = ({ tokenInfo }: { tokenInfo: TokenInfo }) => {
   return (
     <div className="flex flex-row items-center justify-start">
-      <img src={tokenInfo?.logoURI} className="h-[25px]" />
+      <img
+        src={tokenInfo?.logoURI}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src = defaultCoin;
+        }}
+        className="h-[25px] w-[25px]"
+      />
       <div className="flex flex-row items-center">
         <span className="ml-4 text-lg font-bold text-white">
           {tokenInfo.symbol}
@@ -108,7 +124,7 @@ export const SelectCoin = ({
 
   const topList = originalList.filter((e) => TOP_COINS.includes(e.address));
 
-  const [list] = useVirtualList(originalList, {
+  const [list, scrollTo] = useVirtualList(originalList, {
     containerTarget: containerRef,
     wrapperTarget: wrapperRef,
     itemHeight: 70,
@@ -134,7 +150,10 @@ export const SelectCoin = ({
     >
       <input
         value={search || ""}
-        onChange={(e) => setSearch(e.target.value.trim())}
+        onChange={(e) => {
+          setSearch(e.target.value.trim());
+          scrollTo(0);
+        }}
         type="text"
         id="search-token"
         placeholder="Search"
