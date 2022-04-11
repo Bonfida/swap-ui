@@ -11,7 +11,7 @@ import { ButtonBorderGradient } from "../Buttons";
 import { TokenInfo } from "@solana/spl-token-registry";
 import { SelectCoin } from "./SelectCoin";
 import { RefreshIcon, SwitchVerticalIcon } from "@heroicons/react/solid";
-import { FEES } from "../../settings/fees";
+import { FEES_BPS } from "../../settings/fees";
 import {
   WalletMultiButton,
   WalletModalProvider,
@@ -27,6 +27,9 @@ import { toast } from "react-toastify";
 import { ExplorerButton } from "../Buttons";
 import Loading from "../Loading";
 import emoji from "../../assets/no-route.png";
+import { getFeeAddress } from "../../utils/fees";
+import { RenderUpdate } from "../../utils/notifications";
+import { nanoid } from "nanoid";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
@@ -45,9 +48,10 @@ interface IState {
 }
 
 const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
-  const toastId = useRef(null as any);
+  const toastId = useRef(nanoid());
   const [firstLoad, setFirstLoad] = useState(false);
-  const { connected, publicKey, signAllTransactions } = useWallet();
+  const { connected, publicKey, signAllTransactions, sendTransaction } =
+    useWallet();
   const { connection } = useConnection();
   const { tokenMap, routeMap, loaded, api } = useJupiterApiContext();
   const [routes, setRoutes] = useState<
@@ -85,8 +89,8 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         amount: parseFloat(inputAmout) * Math.pow(10, inputTokenInfo?.decimals),
         inputMint: inputTokenInfo?.address,
         outputMint: outputTokenInfo?.address,
-        slippage: 1, // 10bps TODO CHANGE
-        feeBps: 1,
+        slippage: slippage,
+        feeBps: FEES_BPS,
       })
       .then(({ data }) => {
         if (data) {
@@ -136,20 +140,42 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     }
   }, [inputTokenInfo, outputTokenInfo]);
 
+  console.log(toastId.current);
+
   const handleSwap = async () => {
+    if (!outputTokenInfo?.address) return;
     try {
-      if (!loadingRoute && routes?.[0] && publicKey && signAllTransactions) {
+      if (!loadingRoute && selectedRoute && publicKey && signAllTransactions) {
         setSwapping(true);
-        toastId.current = toast("Preparing transaction...", {
+        toast(<RenderUpdate updateText="Preparing transaction" />, {
           type: toast.TYPE.INFO,
           autoClose: false,
+          toastId: toastId.current,
         });
+
+        // Fee are in output token
+        const { pubkey: feeAccount, ix } = await getFeeAddress(
+          connection,
+          new PublicKey(outputTokenInfo.address),
+          publicKey
+        );
+
+        let feeTx: Transaction | undefined = undefined;
+        if (ix) {
+          feeTx = new Transaction().add(ix);
+          const { blockhash } = await connection.getLatestBlockhash();
+          feeTx.feePayer = publicKey;
+          feeTx.recentBlockhash = blockhash;
+          const sig = await sendTransaction(feeTx, connection);
+          await connection.confirmTransaction(sig, "confirmed");
+        }
+
         const { swapTransaction, setupTransaction, cleanupTransaction } =
           await api.v1SwapPost({
             body: {
-              route: routes[0],
+              route: selectedRoute,
               userPublicKey: publicKey.toBase58(),
-              // feeAccount: FEES.toBase58(),
+              feeAccount: feeAccount.toBase58(),
             },
           });
         const transactions = (
@@ -161,14 +187,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         });
 
         await signAllTransactions(transactions);
+
         toast.update(toastId.current, {
           type: toast.TYPE.INFO,
           autoClose: false,
-          render: (
-            <div className="flex flex-row items-center">
-              <span className="mr-2">Sending transaction </span> <Loading />
-            </div>
-          ),
+          render: () => <RenderUpdate updateText="Sending transaction" />,
+          toastId: toastId.current,
         });
 
         for (let transaction of transactions) {
@@ -184,12 +208,13 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           toast.update(toastId.current, {
             type: toast.TYPE.SUCCESS,
             autoClose: 5_000,
-            render: (
-              <div className="flex flex-col">
-                <span> Transaction confirmed 👌</span>
-                <ExplorerButton tx={txid} />
-              </div>
+            render: () => (
+              <RenderUpdate
+                updateText="Transaction confirmed 👌"
+                signature={txid}
+              />
             ),
+            toastId: toastId.current,
           });
 
           console.log(txid);
@@ -200,11 +225,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       toast.update(toastId.current, {
         type: toast.TYPE.ERROR,
         autoClose: 5_000,
-        render: (
-          <div className="flex flex-col">
-            <span>Transaction failed 🤯</span>
-          </div>
-        ),
+        render: () => <RenderUpdate updateText="Transaction failed 🤯" />,
       });
     }
     setSwapping(false);
@@ -280,7 +301,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           )}
           {!hasRoute && !loadingRoute && (
             <div className="flex flex-row justify-center">
-              <span className="text-lg font-bold mr-2">No route found</span>
+              <span className="mr-2 text-lg font-bold">No route found</span>
               <img className="h-[30px] w-[30px]" src={emoji} />
             </div>
           )}

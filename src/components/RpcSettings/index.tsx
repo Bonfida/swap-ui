@@ -73,7 +73,7 @@ export const RpcSettings = ({
       modalClass="py-10"
     >
       <div>
-        <h2 className="font-bold text-lg text-white mb-2">RPC Settings</h2>
+        <h2 className="mb-2 text-lg font-bold text-white">RPC Settings</h2>
 
         {/* Dropdown */}
         <div className="w-full top-16">
@@ -94,7 +94,7 @@ export const RpcSettings = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute w-full text-lg font-bold py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-lg">
+                <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-lg font-bold bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-lg">
                   {RPCS.slice(0, 2).map((rpc, idx) => (
                     <Listbox.Option
                       key={idx}
@@ -156,7 +156,7 @@ export const RpcSettings = ({
               <span className="font-bold">Valid RPC Node</span>
             </>
           )}
-          {loading && <progress className="progress w-56"></progress>}
+          {loading && <progress className="w-56 progress"></progress>}
         </div>
       </div>
 

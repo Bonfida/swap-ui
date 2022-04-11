@@ -16,13 +16,13 @@ const Row = ({
     <button
       type="button"
       onClick={() => handleSelect(info)}
-      className="flex flex-row justify-start items-center p-3 hover:bg-base-300 cursor-pointer hover:rounded-md"
+      className="flex flex-row items-center justify-start p-3 cursor-pointer hover:bg-base-300 hover:rounded-md"
     >
       <div>
         <img src={info.logoURI} className="h-[35px]" />
       </div>
       <div className="flex flex-col ml-3">
-        <span className="text-md font-bold">{info.symbol}</span>
+        <span className="font-bold text-md">{info.symbol}</span>
         <span className="text-sm opacity-80">{info.name}</span>
       </div>
     </button>
@@ -31,10 +31,10 @@ const Row = ({
 
 const Coin = ({ tokenInfo }: { tokenInfo: TokenInfo }) => {
   return (
-    <div className="flex flex-row justify-start items-center">
+    <div className="flex flex-row items-center justify-start">
       <img src={tokenInfo?.logoURI} className="h-[25px]" />
       <div className="flex flex-row items-center">
-        <span className="text-lg font-bold text-white ml-4">
+        <span className="ml-4 text-lg font-bold text-white">
           {tokenInfo.symbol}
         </span>
         <ChevronDownIcon className="w-[20px] text-grey ml-2" />
@@ -69,7 +69,7 @@ const TopCoin = ({
       className="m-1 flex flex-row p-2 border border-[#E4E9EE] rounded-[5px] border-opacity-50 hover:bg-[#E4E9EE] hover:bg-opacity-10 cursor-pointer"
     >
       <img className="w-[18px] h-[18px] mr-2" src={token.logoURI} />
-      <span className="text-white text-xs font-bold">{token.symbol}</span>
+      <span className="text-xs font-bold text-white">{token.symbol}</span>
     </button>
   );
 };
@@ -130,11 +130,11 @@ export const SelectCoin = ({
         type="text"
         id="search-token"
         placeholder="Search"
-        className="w-full text-xs sm:text-md input input-bordered input-info mb-3"
+        className="w-full mb-3 text-xs sm:text-md input input-bordered input-info"
         spellCheck={false}
       />
 
-      <div className="flex flex-row justify-start flex-wrap">
+      <div className="flex flex-row flex-wrap justify-start">
         {topList.map((e, idx) => (
           <TopCoin
             key={`top-coin-${idx}`}

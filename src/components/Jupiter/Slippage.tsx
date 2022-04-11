@@ -31,13 +31,13 @@ export const Slippage = ({
       buttonClass="bg-gray-200 bg-opacity-20 hover:bg-gray-200 hover:bg-opacity-20 btn-sm"
       buttonText={
         <div className="flex flex-row items-center">
-          <AdjustmentsIcon className="rotate-90 w-3 mr-2" />
+          <AdjustmentsIcon className="w-3 mr-2 rotate-90" />
           <span className="text-xs"> {slippage / 10} %</span>
         </div>
       }
     >
       <div>
-        <h2 className="font-bold text-lg text-white mb-2">Slippage settings</h2>
+        <h2 className="mb-2 text-lg font-bold text-white">Slippage settings</h2>
         <div className="flex flex-row justify-between mt-5">
           {OPTIONS.map((e) => {
             return (
@@ -69,16 +69,16 @@ export const Slippage = ({
               type="number"
               max={100}
               min={0}
-              className="w-full h-full rounded-md bg-neutral focus:outline-none text-right pr-10 text-lg font-bold"
+              className="w-full h-full pr-10 text-lg font-bold text-right rounded-md bg-neutral focus:outline-none"
             />
-            <span className="text-lg font-bold absolute top-3 right-5">%</span>
+            <span className="absolute text-lg font-bold top-3 right-5">%</span>
           </div>
         </div>
         {!canSubmit && (
           <div className="flex flex-col items-center mt-5">
             <div className="flex flex-row items-center">
               <InformationCircleIcon className="h-[15px] text-orange-300 mr-2" />
-              <span className="text-white text-sm">
+              <span className="text-sm text-white">
                 Slippage must be between 0 and 50
               </span>
             </div>

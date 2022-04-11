@@ -25,7 +25,7 @@ const TopBar = ({ setCustomRpc }: { setCustomRpc: (url: string) => void }) => {
       <div className="absolute top-5 left-4">
         <Logo />
       </div>
-      <div className="absolute mt-3 top-3 right-4 flex flex-row">
+      <div className="absolute flex flex-row mt-3 top-3 right-4">
         <RpcSettings setCustomRpc={setCustomRpc} />
         <WalletModalProvider>
           {connected ? <WalletDisconnectButton /> : <WalletMultiButton />}
