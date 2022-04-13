@@ -135,6 +135,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
   const handleSwap = async () => {
     if (!outputTokenInfo?.address) return;
+    let txid: string | undefined = undefined;
     try {
       if (!loadingRoute && selectedRoute && publicKey && signAllTransactions) {
         setSwapping(true);
@@ -189,12 +190,11 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         });
 
         for (let transaction of transactions) {
+          console.log(`Sending ${transaction}`);
           // get transaction object from serialized transaction
 
           // perform the swap
-          const txid = await connection.sendRawTransaction(
-            transaction.serialize()
-          );
+          txid = await connection.sendRawTransaction(transaction.serialize());
 
           await connection.confirmTransaction(txid, "processed");
 
@@ -216,13 +216,31 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       }
     } catch (e) {
       console.error(e);
-      toast.update(toastId.current, {
-        type: toast.TYPE.ERROR,
-        autoClose: 5_000,
-        render: () => (
-          <RenderUpdate updateText="Transaction failed 🤯" load={false} />
-        ),
-      });
+      if (
+        e instanceof Error &&
+        e.message.includes("Transaction was not confirmed") &&
+        txid
+      ) {
+        toast.update(toastId.current, {
+          type: toast.TYPE.INFO,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate
+              updateText="Transaction failed to confirm. Inspect it on the explorer"
+              load={false}
+              signature={txid}
+            />
+          ),
+        });
+      } else {
+        toast.update(toastId.current, {
+          type: toast.TYPE.ERROR,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate updateText="Transaction failed 🤯" load={false} />
+          ),
+        });
+      }
     }
     refreshToken();
     setSwapping(false);
@@ -239,6 +257,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     (bestRoute.outAmount || 0) / Math.pow(10, outputTokenInfo?.decimals || 1);
 
   const refresh = async () => {
+    if (swapping) return;
     fetchRoute();
     refreshToken();
   };
