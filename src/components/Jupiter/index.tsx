@@ -135,7 +135,8 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
   const handleSwap = async () => {
     if (!outputTokenInfo?.address) return;
-    let txid: string | undefined = undefined;
+
+    const txids: string[] = [];
     try {
       if (!loadingRoute && selectedRoute && publicKey && signAllTransactions) {
         setSwapping(true);
@@ -190,12 +191,14 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         });
 
         for (let transaction of transactions) {
-          console.log(`Sending ${transaction}`);
           // get transaction object from serialized transaction
 
           // perform the swap
-          txid = await connection.sendRawTransaction(transaction.serialize());
+          const txid = await connection.sendRawTransaction(
+            transaction.serialize()
+          );
 
+          txids.push(txid);
           await connection.confirmTransaction(txid, "processed");
 
           toast.update(toastId.current, {
@@ -204,7 +207,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             render: () => (
               <RenderUpdate
                 updateText="Transaction confirmed 👌"
-                signature={txid}
+                signatures={txids}
                 load={true}
               />
             ),
@@ -215,11 +218,32 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
         }
       }
     } catch (e) {
-      console.error(e);
-      if (
-        e instanceof Error &&
+      console.error("Error", e);
+      const isError = e instanceof Error;
+      if (isError && e.message.includes("Transaction simulation")) {
+        toast.update(toastId.current, {
+          type: toast.TYPE.INFO,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate
+              updateText="Transaction simulation failed"
+              load={false}
+            />
+          ),
+        });
+      } else if (isError && e.message.includes("blockhash")) {
+        toast.update(toastId.current, {
+          type: toast.TYPE.INFO,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate updateText="Blockhash not found" load={false} />
+          ),
+          toastId: toastId.current,
+        });
+      } else if (
+        isError &&
         e.message.includes("Transaction was not confirmed") &&
-        txid
+        txids.length > 0
       ) {
         toast.update(toastId.current, {
           type: toast.TYPE.INFO,
@@ -228,7 +252,21 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
             <RenderUpdate
               updateText="Transaction failed to confirm. Inspect it on the explorer"
               load={false}
-              signature={txid}
+              signatures={txids}
+            />
+          ),
+        });
+      } else if (
+        isError &&
+        e.message.includes("Transaction was not confirmed")
+      ) {
+        toast.update(toastId.current, {
+          type: toast.TYPE.INFO,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate
+              updateText="Transaction failed to confirm"
+              load={false}
             />
           ),
         });

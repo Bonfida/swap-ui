@@ -3,18 +3,20 @@ import { ExplorerButton } from "../../components/Buttons";
 
 export const RenderUpdate = ({
   updateText,
-  signature,
+  signatures,
   load,
 }: {
   updateText: string;
-  signature?: string;
+  signatures?: string[];
   load?: boolean;
 }) => {
-  if (signature) {
+  if (signatures) {
     return (
       <div className="flex flex-col">
         <span> Transaction confirmed 👌</span>
-        <ExplorerButton tx={signature} />
+        {signatures.map((sig) => {
+          return <ExplorerButton key={sig} tx={sig} />;
+        })}
       </div>
     );
   }

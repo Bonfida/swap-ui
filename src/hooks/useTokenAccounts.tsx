@@ -11,9 +11,13 @@ export const useTokenAccounts = () => {
     const results = await connection.getTokenAccountsByOwner(publicKey, {
       programId: TOKEN_PROGRAM_ID,
     });
-    return results.value
+    const accounts = results.value
       .map((e) => AccountLayout.decode(e.account.data))
       .filter((e) => !!e) as RawAccount[];
+    accounts.sort((a, b) => {
+      return parseInt(a.amount.toString()) - parseInt(b.amount.toString());
+    });
+    return accounts;
   };
 
   return useRequest(fn, {

@@ -18,7 +18,7 @@
     "@solana/wallet-adapter-react": "^0.15.4",
     "@solana/wallet-adapter-react-ui": "^0.9.6",
     "@solana/wallet-adapter-wallets": "^0.15.5",
-    "@solana/web3.js": "^1.37.1",
+    "@solana/web3.js": "~1.37.1",
     "@strata-foundation/web3-token-auth": "^3.4.6",
     "ahooks": "^3.3.0",
     "axios": "^0.26.1",

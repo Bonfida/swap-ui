@@ -60,13 +60,14 @@ const App = () => {
 
   const endpoint = useMemo(() => customRpc || (RPC_URL as string), [customRpc]);
 
-  const isGenGo = endpoint?.includes("genesysgo");
+  const jwt = endpoint?.includes("genesysgo") || endpoint?.includes("quiknode");
 
   return (
     <ConnectionProvider
       endpoint={endpoint as string}
       config={{
-        fetchMiddleware: isGenGo
+        commitment: "processed",
+        fetchMiddleware: jwt
           ? tokenAuthFetchMiddleware({
               getToken,
             })
