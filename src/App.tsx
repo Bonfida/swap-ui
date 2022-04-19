@@ -19,7 +19,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "./components/navigation-frame/Footer";
 import TopBar from "./components/navigation-frame/TopBar";
-import { RPC_URL } from "./settings/rpc";
+import { RPC_URL, WSS_URL } from "./settings/rpc";
 import { JupiterApiProvider } from "./contexts";
 import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
@@ -66,6 +66,7 @@ const App = () => {
     <ConnectionProvider
       endpoint={endpoint as string}
       config={{
+        wsEndpoint: WSS_URL as string,
         commitment: "processed",
         fetchMiddleware: jwt
           ? tokenAuthFetchMiddleware({
