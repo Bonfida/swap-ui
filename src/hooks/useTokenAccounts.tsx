@@ -15,7 +15,7 @@ export const useTokenAccounts = () => {
       .map((e) => AccountLayout.decode(e.account.data))
       .filter((e) => !!e) as RawAccount[];
     accounts.sort((a, b) => {
-      return parseInt(a.amount.toString()) - parseInt(b.amount.toString());
+      return parseInt(b.amount.toString()) - parseInt(a.amount.toString());
     });
     return accounts;
   };
