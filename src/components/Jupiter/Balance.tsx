@@ -1,6 +1,10 @@
 import { TokenInfo } from "@solana/spl-token-registry";
-import _ from "lodash";
-import { RawAccount } from "@solana/spl-token";
+import { TokenAccounts } from "@bonfida/ui";
+import round from "lodash/round";
+import { PublicKey } from "@solana/web3.js";
+import { useSolBalance } from "@bonfida/ui";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { NATIVE_MINT } from "@solana/spl-token";
 
 export const Balance = ({
   token,
@@ -8,21 +12,35 @@ export const Balance = ({
   setInput,
 }: {
   token: TokenInfo | null | undefined;
-  tokenAccounts: RawAccount[] | undefined;
+  tokenAccounts: TokenAccounts | undefined;
   setInput?: (value: React.SetStateAction<string>) => void;
 }) => {
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
+  const { data: solBalance } = useSolBalance(connection, publicKey);
+
+  const wSol = token?.address === NATIVE_MINT.toBase58();
+
+  const tokenAccount = token
+    ? tokenAccounts?.getByMint(new PublicKey(token?.address))
+    : null;
+
+  if (!token) {
+    return null;
+  }
+
   const balance =
-    Number(
-      tokenAccounts?.find((e) => e.mint.toBase58() === token?.address)
-        ?.amount || 0
-    ) / Math.pow(10, token?.decimals || 1);
+    tokenAccount && tokenAccount.decimals
+      ? Number(tokenAccount.account.amount) /
+        Math.pow(10, tokenAccount.decimals)
+      : 0;
 
   return (
     <div className="flex flex-row items-center mr-1">
       <span className="mr-1 text-sm font-bold text-white">Balance: </span>
       <span className="mr-1 text-sm font-bold text-white opacity-40">
         {" "}
-        {_.round(balance, 2)}
+        {round(wSol ? solBalance?.uiAmount || 0 : balance, 2)}
       </span>
 
       {setInput && !!balance && (

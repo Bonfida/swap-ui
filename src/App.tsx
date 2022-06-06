@@ -19,13 +19,13 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "./components/navigation-frame/Footer";
 import TopBar from "./components/navigation-frame/TopBar";
-import { RPC_URL, WSS_URL } from "./settings/rpc";
+import { RPC_URL, RPC_WSS } from "./settings/rpc";
 import { JupiterApiProvider } from "./contexts";
 import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
 import { useLocalStorageState } from "ahooks";
 import { tokenAuthFetchMiddleware } from "@strata-foundation/web3-token-auth";
-import { getToken } from "./utils/rpc";
+import { getToken } from "@bonfida/ui";
 import { Warning } from "./components/Warning";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -60,17 +60,21 @@ const App = () => {
 
   const endpoint = useMemo(() => customRpc || (RPC_URL as string), [customRpc]);
 
-  const jwt = endpoint?.includes("genesysgo") || endpoint?.includes("quiknode");
+
+  const jwt = endpoint?.includes("quiknode");
+
 
   return (
     <ConnectionProvider
       endpoint={endpoint as string}
       config={{
-        wsEndpoint: WSS_URL as string,
         commitment: "processed",
+        confirmTransactionInitialTimeout: 15 * 1_000,
+        wsEndpoint: RPC_WSS,
         fetchMiddleware: jwt
           ? tokenAuthFetchMiddleware({
               getToken,
+              tokenExpiry: 2.5 * 60 * 1_000,
             })
           : undefined,
       }}

@@ -1,5 +1,6 @@
-export const RPC_URL = import.meta.env.VITE_RPC;
+export const RPC_URL = import.meta.env.VITE_RPC as string;
+export const RPC_GEN_URL = import.meta.env.VITE_GEN_RPC as string;
 
-export const GEN_GO_TOKEN = import.meta.env.VITE_GEN_GO_TOKEN;
 
-export const WSS_URL = import.meta.env.VITE_WSS;
+export const RPC_WSS = import.meta.env.VITE_WSS_URL as string;
+

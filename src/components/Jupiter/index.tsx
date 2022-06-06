@@ -30,13 +30,17 @@ import { getFeeAddress } from "../../utils/fees";
 import { RenderUpdate } from "../../utils/notifications";
 import { nanoid } from "nanoid";
 import { Balance } from "./Balance";
-import { useTokenAccounts } from "../../hooks";
+import { retry, sendRawTransaction, FIDA_MINT } from "@bonfida/ui";
+import { GENESYS_GO_CONNECTIONS } from "../../utils/connection";
+import { useTokenAccounts } from "@bonfida/ui";
+import round from "lodash/round";
+import { NATIVE_MINT } from "@solana/spl-token";
+import { useSolBalance } from "@bonfida/ui";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =
   "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
-export const OUTPUT_MINT_ADDRESS =
-  "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"; // USDT
+export const OUTPUT_MINT_ADDRESS = FIDA_MINT; // FIDA
 
 import { useJupiterApiContext } from "../../contexts";
 
@@ -67,8 +71,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const [hasRoute, setHasRoute] = useState(false);
   const [swapping, setSwapping] = useState(false);
   const [loadingRoute, setLoadingRoute] = useState(true); // Loading by default
-  const { data: tokenAccounts, refresh: refreshToken } = useTokenAccounts();
+  const { data: tokenAccounts, refresh: refreshToken } = useTokenAccounts(
+    connection,
+    publicKey
+  );
   const [inputAmout, setInputAmount] = useState("1");
+  const { data: solBalance } = useSolBalance(connection, publicKey);
 
   useMemo(() => {
     setInputTokenInfo(tokenMap.get(INPUT_MINT_ADDRESS) as TokenInfo);
@@ -136,6 +144,45 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
   const handleSwap = async () => {
     if (!outputTokenInfo?.address) return;
 
+    const wSol = inputTokenInfo?.address === NATIVE_MINT.toBase58();
+
+    const parsedAmount = parseFloat(inputAmout);
+    if (
+      !parsedAmount ||
+      isNaN(parsedAmount) ||
+      !isFinite(parsedAmount) ||
+      !inputTokenInfo?.address
+    ) {
+      return toast.info(<p className="text-xs font-bold">Invalid amount</p>);
+    }
+
+    const tokenAccount = tokenAccounts?.getByMint(
+      new PublicKey(inputTokenInfo?.address)
+    );
+
+    const userBalances =
+      wSol && solBalance
+        ? solBalance.uiAmount
+        : tokenAccount?.decimals
+        ? Number(tokenAccount?.account.amount) /
+          Math.pow(10, tokenAccount?.decimals)
+        : null;
+
+    if (!userBalances) {
+      return toast.info(
+        <p className="text-xs font-bold">Could not find user balances</p>
+      );
+    }
+
+    if (userBalances < parsedAmount) {
+      return toast.info(
+        <p className="text-xs font-bold">
+          Not enough balances (only have {round(userBalances, 2)}
+          {inputTokenInfo.symbol})
+        </p>
+      );
+    }
+
     const txids: string[] = [];
     try {
       if (!loadingRoute && selectedRoute && publicKey && signAllTransactions) {
@@ -179,8 +226,6 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           return Transaction.from(Buffer.from(tx, "base64"));
         });
 
-        await signAllTransactions(transactions);
-
         toast.update(toastId.current, {
           type: toast.TYPE.INFO,
           autoClose: false,
@@ -190,32 +235,40 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
           toastId: toastId.current,
         });
 
+        await signAllTransactions(transactions);
+
+        let c = 1;
+        const len = transactions.length;
         for (let transaction of transactions) {
-          // get transaction object from serialized transaction
+          console.log(`Sending tx ${c}/${len}`);
 
-          // perform the swap
-          const txid = await connection.sendRawTransaction(
-            transaction.serialize()
-          );
-
-          txids.push(txid);
-          await connection.confirmTransaction(txid, "processed");
-
-          toast.update(toastId.current, {
-            type: toast.TYPE.SUCCESS,
-            autoClose: 5_000,
-            render: () => (
-              <RenderUpdate
-                updateText="Transaction confirmed 👌"
-                signatures={txids}
-                load={true}
-              />
-            ),
-            toastId: toastId.current,
+          const txid = await retry(async () => {
+            const sig = await sendRawTransaction(
+              [connection, GENESYS_GO_CONNECTIONS],
+              transaction
+            );
+            await connection.confirmTransaction(sig, "processed");
+            return sig;
           });
 
+          txids.push(txid);
+
           console.log(txid);
+          c += 1;
         }
+
+        toast.update(toastId.current, {
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5_000,
+          render: () => (
+            <RenderUpdate
+              updateText="Transaction confirmed 👌"
+              signatures={txids}
+              load={true}
+            />
+          ),
+          toastId: toastId.current,
+        });
       }
     } catch (e) {
       console.error("Error", e);
