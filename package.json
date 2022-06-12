@@ -8,10 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@bonfida/ui": "ssh://github.com:Bonfida/bonfida-ui.git",
+    "@bonfida/ui": "ssh://git@github.com:Bonfida/bonfida-ui.git",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
-    "@jup-ag/api": "^0.0.2",
+    "@jup-ag/api": "^0.0.3",
     "@solana/buffer-layout": "^4.0.0",
     "@solana/spl-token": "^0.2.0",
     "@solana/spl-token-registry": "^0.2.3293",
