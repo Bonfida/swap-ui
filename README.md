@@ -21,7 +21,7 @@
 <br />
 
 ```
-git clone https://github.com/Bonfida/swap-ui
+git clone https://github.com/Bonfida/swap-ui.git
 cd swap-ui
 yarn
 yarn dev
