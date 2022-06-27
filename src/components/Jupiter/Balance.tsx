@@ -2,7 +2,6 @@ import { TokenInfo } from "@solana/spl-token-registry";
 import { TokenAccounts } from "@bonfida/ui";
 import round from "lodash/round";
 import { PublicKey } from "@solana/web3.js";
-import { useSolBalance } from "@bonfida/ui";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { NATIVE_MINT } from "@solana/spl-token";
 
@@ -10,14 +9,20 @@ export const Balance = ({
   token,
   tokenAccounts,
   setInput,
+  solBalance,
 }: {
   token: TokenInfo | null | undefined;
   tokenAccounts: TokenAccounts | undefined;
   setInput?: (value: React.SetStateAction<string>) => void;
+  solBalance:
+    | {
+        amount: number;
+        uiAmount: number;
+      }
+    | undefined;
 }) => {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
-  const { data: solBalance } = useSolBalance(connection, publicKey);
 
   const wSol = token?.address === NATIVE_MINT.toBase58();
 

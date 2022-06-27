@@ -253,13 +253,9 @@
     eip1193-provider "^1.0.1"
     js-sha3 "^0.8.0"
 
-"@bonfida/ui@file:../bonfida-ui":
+"@bonfida/ui@ssh://git@github.com:Bonfida/bonfida-ui.git":
   version "0.0.0"
-  dependencies:
-    bs58 "^5.0.0"
-    clsx "^1.1.1"
-    react "^18.0.0"
-    react-dom "^18.0.0"
+  resolved "ssh://git@github.com:Bonfida/bonfida-ui.git#42ee0a02d32d17f3d4537a1c4716600e43bc2a81"
 
 "@ethersproject/bytes@^5.6.0":
   version "5.6.1"
@@ -347,10 +343,10 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@jup-ag/api@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@jup-ag/api/-/api-0.0.2.tgz#0817485a52a27428eef662c39a7a5135265e12d2"
-  integrity sha512-rKXzyBalmJGCvAT/18mBChOKKUL3/igoomAhT+YtuhODcfV8xO0xDKsHz4ugSZsGXThkJeRF2TPohTHU3e53wQ==
+"@jup-ag/api@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@jup-ag/api/-/api-0.0.3.tgz#923b0a51a4f1b189c6ef763d0c66f14f88fa2668"
+  integrity sha512-Hh5WaI0D2FTX2x2pJ6YM0BE9WubjOmE2LjsTcbRFslwOv2OjVRB6P6dP3XLmNnO7IgRQAm/GW0gAjdfxDcdWoQ==
   dependencies:
     cross-fetch "^3.1.5"
 
@@ -434,6 +430,13 @@
   dependencies:
     bs58 "^4.0.1"
     eventemitter3 "^4.0.7"
+
+"@pythnetwork/client@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@pythnetwork/client/-/client-2.7.1.tgz#33a3ff108937bc7da765ed9d84878002396719f8"
+  integrity sha512-q8lRwon69Q6P7TC8u3IFVXvC6Wa0FjxuuvbGclOelE2zbom7ZA2014bwPlu5ta9NDs4EUkUAPv39e+2ikYHyHg==
+  dependencies:
+    buffer "^6.0.1"
 
 "@rollup/pluginutils@^4.2.0":
   version "4.2.0"
@@ -1090,11 +1093,6 @@ base-x@^3.0.2:
   dependencies:
     safe-buffer "^5.0.1"
 
-base-x@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/base-x/-/base-x-4.0.0.tgz#d0e3b7753450c73f8ad2389b5c018a4af7b2224a"
-  integrity sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==
-
 base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -1232,13 +1230,6 @@ bs58@^4.0.0, bs58@^4.0.1:
   dependencies:
     base-x "^3.0.2"
 
-bs58@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/bs58/-/bs58-5.0.0.tgz#865575b4d13c09ea2a84622df6c8cbeb54ffc279"
-  integrity sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==
-  dependencies:
-    base-x "^4.0.0"
-
 bs58check@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/bs58check/-/bs58check-2.1.2.tgz#53b018291228d82a5aa08e7d796fdafda54aebfc"
@@ -1261,7 +1252,7 @@ buffer@6.0.1:
     base64-js "^1.3.1"
     ieee754 "^1.2.1"
 
-buffer@^6.0.3, buffer@~6.0.3:
+buffer@^6.0.1, buffer@^6.0.3, buffer@~6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
   integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
@@ -2077,6 +2068,11 @@ hash.js@1.1.7, hash.js@^1.0.0, hash.js@^1.0.3, hash.js@^1.1.7:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+hashlru@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/hashlru/-/hashlru-2.3.0.tgz#5dc15928b3f6961a2056416bb3a4910216fdfb51"
+  integrity sha512-0cMsjjIC8I+D3M44pOQdsy0OHXGLVz6Z0beRuufhKa0KfaD2wGwAev6jILzXsd3/vpnNQJmWyZtIILqM1N+n5A==
+
 hmac-drbg@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
@@ -2801,14 +2797,6 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-dom@^18.0.0:
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.1.0.tgz#7f6dd84b706408adde05e1df575b3a024d7e8a2f"
-  integrity sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.22.0"
-
 react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.11.0.tgz#77198b944733f0f1f1a90e791de4541f9f074046"
@@ -2828,13 +2816,6 @@ react@^17.0.2:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-
-react@^18.0.0:
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.1.0.tgz#6f8620382decb17fdc5cc223a115e2adbf104890"
-  integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 readable-stream@^3.5.0, readable-stream@^3.6.0:
   version "3.6.0"
@@ -2967,13 +2948,6 @@ scheduler@^0.20.2:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-
-scheduler@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.22.0.tgz#83a5d63594edf074add9a7198b1bae76c3db01b8"
-  integrity sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 screenfull@^5.0.0:
   version "5.2.0"
@@ -3148,6 +3122,13 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+tailwind-merge@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.3.0.tgz#fa29557a2e1c6947904143e45884e554f491937d"
+  integrity sha512-M+DC6DO5eypc3/iOt/oTuqUH68Ip+XCu/Afybg9/ATxUX6KMPk4UGU4z4EMx08BMOBL+iOL93+hx3Jxpb9qNGw==
+  dependencies:
+    hashlru "^2.3.0"
 
 tailwindcss@^3.0, tailwindcss@^3.0.23:
   version "3.0.23"

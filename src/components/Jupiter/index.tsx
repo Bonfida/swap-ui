@@ -76,7 +76,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     publicKey
   );
   const [inputAmout, setInputAmount] = useState("1");
-  const { data: solBalance } = useSolBalance(connection, publicKey);
+  const { data: solBalance, refresh: refreshSol } = useSolBalance(
+    connection,
+    publicKey
+  );
 
   useMemo(() => {
     setInputTokenInfo(tokenMap.get(INPUT_MINT_ADDRESS) as TokenInfo);
@@ -334,6 +337,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
       }
     }
     refreshToken();
+    refreshSol();
     setSwapping(false);
   };
 
@@ -351,6 +355,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
     if (swapping) return;
     fetchRoute();
     refreshToken();
+    refreshSol();
   };
 
   useInterval(() => {
@@ -379,6 +384,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
               tokenAccounts={tokenAccounts}
               token={inputTokenInfo}
               setInput={setInputAmount}
+              solBalance={solBalance}
             />
           </div>
           <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
@@ -405,7 +411,11 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = (props) => {
 
           <div className="flex flex-row justify-between mt-5">
             <span className="ml-3 font-bold text-white">You receive</span>
-            <Balance tokenAccounts={tokenAccounts} token={outputTokenInfo} />
+            <Balance
+              tokenAccounts={tokenAccounts}
+              token={outputTokenInfo}
+              solBalance={solBalance}
+            />
           </div>
           <div className="relative w-full p-10 my-5 rounded-lg bg-neutral">
             <div className="absolute text-xl font-bold text-right bg-transparent right-4 top-6 input">
