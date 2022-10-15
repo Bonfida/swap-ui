@@ -30,12 +30,12 @@ import { getFeeAddress } from "../../utils/fees";
 import { RenderUpdate } from "../../utils/notifications";
 import { nanoid } from "nanoid";
 import { Balance } from "./Balance";
-import { retry, sendRawTransaction, FIDA_MINT } from "@bonfida/ui";
+import { retry, sendRawTransaction, FIDA_MINT } from "@bonfida/hooks";
 import { GENESYS_GO_CONNECTIONS } from "../../utils/connection";
-import { useTokenAccounts } from "@bonfida/ui";
+import { useTokenAccounts } from "@bonfida/hooks";
 import round from "lodash/round";
 import { NATIVE_MINT } from "@solana/spl-token";
-import { useSolBalance } from "@bonfida/ui";
+import { useSolBalance } from "@bonfida/hooks";
 
 // Token Mints
 export const INPUT_MINT_ADDRESS =

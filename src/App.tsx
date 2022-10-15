@@ -25,7 +25,7 @@ import { Buffer } from "buffer";
 import JupiterForm from "./components/Jupiter";
 import { useLocalStorageState } from "ahooks";
 import { tokenAuthFetchMiddleware } from "@strata-foundation/web3-token-auth";
-import { getToken } from "@bonfida/ui";
+import { getToken } from "@bonfida/hooks";
 import { Warning } from "./components/Warning";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -60,9 +60,7 @@ const App = () => {
 
   const endpoint = useMemo(() => customRpc || (RPC_URL as string), [customRpc]);
 
-
   const jwt = endpoint?.includes("quiknode");
-
 
   return (
     <ConnectionProvider

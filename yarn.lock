@@ -253,9 +253,10 @@
     eip1193-provider "^1.0.1"
     js-sha3 "^0.8.0"
 
-"@bonfida/ui@ssh://git@github.com:Bonfida/bonfida-ui.git":
-  version "0.0.0"
-  resolved "ssh://git@github.com:Bonfida/bonfida-ui.git#42ee0a02d32d17f3d4537a1c4716600e43bc2a81"
+"@bonfida/hooks@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@bonfida/hooks/-/hooks-0.0.4.tgz#9e5204e6c8a9389200fe546f9c6005e27bdbeb14"
+  integrity sha512-fRk6TSlh+zF7efDqKtZ6G00Gun0tA+n5EjTbQNxGD0GxRfK5GiJU04+3zE5lU63BEYcER7+fpE0sT3t1i/y2Dw==
 
 "@ethersproject/bytes@^5.6.0":
   version "5.6.1"

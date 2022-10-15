@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@bonfida/ui": "ssh://git@github.com:Bonfida/bonfida-ui.git",
+    "@bonfida/hooks": "^0.0.4",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
     "@jup-ag/api": "^0.0.3",
