@@ -43,4 +43,5 @@ VITE_FEES= The address used to collect fees
 VITE_FEES_BPS= The fees you want to charge on transaction
 VITE_GEN_GO_TOKEN= The URL to fetch the auth token (might not be applicable)
 GENERATE_SOURCEMAP=false
+JUP_SWAP_API=https://quote-api.jup.ag/v6
 ```

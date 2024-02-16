@@ -31,7 +31,7 @@ export const JupiterApiProvider: React.FC<{}> = ({ children }) => {
   const [loaded, setLoaded] = useState(false);
 
   const api = useMemo(() => {
-    const config = new Configuration({ basePath: "https://quote-api.jup.ag" });
+    const config = new Configuration({ basePath: import.meta.env.JUP_SWAP_API || "https://public.jupiterapi.com" });
     return new DefaultApi(config);
   }, []);
 
